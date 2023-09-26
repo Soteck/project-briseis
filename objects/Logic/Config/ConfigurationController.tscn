@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://ch0i2odwen3o5"]
+
+[ext_resource type="Script" path="res://objects/Logic/Config/ConfigurationHolder.cs" id="1_o1kdx"]
+[ext_resource type="Script" path="res://objects/Logic/Config/Items/MouseSensitivity.cs" id="2_8e7ch"]
+
+[node name="ConfigurationController" type="Node"]
+
+[node name="ConfigurationHolder" type="Node" parent="."]
+script = ExtResource("1_o1kdx")
+
+[node name="ConfigurationItems" type="Node" parent="."]
+
+[node name="MouseSensitivity" type="Node" parent="ConfigurationItems"]
+script = ExtResource("2_8e7ch")
+
+[node name="MouseInvert" type="Node" parent="ConfigurationItems"]
