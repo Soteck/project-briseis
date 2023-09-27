@@ -7,7 +7,7 @@ namespace ProjectBriseis.objects.AutoLoad {
     public partial class LoggerAutoLoad  : Singleton<LoggerAutoLoad> {
 
         private RichTextLabel ConsoleLabel;
-
+        private ScrollContainer ConsoleContainer;
 
         private int _maxLines = 100;
         
@@ -21,18 +21,19 @@ namespace ProjectBriseis.objects.AutoLoad {
         public override void _SingletonReady()
         {
             ConsoleLabel = ConsoleAutoLoad.instance.consoleLabel;
+            ConsoleContainer = ConsoleAutoLoad.instance.consoleContainer;
             //TODO: Get _maxLines value from config
             
 
             ConsoleLabel.Text = string.Empty;
-            AddText($"<color=\"white\">{DateTime.Now.ToString("HH:mm:ss.fff")} {this.GetType().Name} enabled</color>");
+            AddText($"[color=\"white\"]{DateTime.Now.ToString("HH:mm:ss.fff")} {this.GetType().Name} enabled[/color]");
         }
         
         // private void OnEnable()
         // {
         //     if (debugAreaText == null)
         //     {
-        //         debugAreaText = GetComponent<TextMeshProUGUI>();
+        //         debugAreaText = GetComponent[TextMeshProUGUI]();
         //     }
         //     DrawLog();
         // }
@@ -58,24 +59,26 @@ namespace ProjectBriseis.objects.AutoLoad {
             
                 foreach (LogLine line in _lines) {
                     if (line.Drawn) continue;
-                    ConsoleLabel.Text += line.Data + '\n';
+                    ConsoleLabel.AppendText(line.Data + '\n');
                     line.Drawn = true;
                 }
+
+                ConsoleContainer.ScrollVertical = (int) Math.Round(ConsoleContainer.Size.Y);
             }
         }
 
         public void LogInfo(string message) {
-            AddText($"<color=\"green\">{DateTime.Now:HH:mm:ss.fff} {message}</color>");
+            AddText($"[color=\"green\"]{DateTime.Now:HH:mm:ss.fff} {message}[/color]");
         }
 
         public void LogError(string message)
         {
-            AddText($"<color=\"red\">{DateTime.Now:HH:mm:ss.fff} {message}</color>");
+            AddText($"[color=\"red\"]{DateTime.Now:HH:mm:ss.fff} {message}[/color]");
         }
 
         public void LogWarning(string message)
         {
-            AddText($"<color=\"yellow\">{DateTime.Now:HH:mm:ss.fff} {message}</color>");
+            AddText($"[color=\"yellow\"]{DateTime.Now:HH:mm:ss.fff} {message}[/color]");
         }
         
         private class LogLine {
