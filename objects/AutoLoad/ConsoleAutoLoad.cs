@@ -52,9 +52,11 @@ namespace ProjectBriseis.objects.AutoLoad {
 
         private LineEdit.TextSubmittedEventHandler lineEditOnTextSubmitted() {
             return text => {
-                lineEdit.Clear();
-                Log.UserInput(text);
-                consoleInterpreter.RunInput(text);
+                if (text.Length > 0) {
+                    lineEdit.Clear();
+                    Log.UserInput(text);
+                    consoleInterpreter.RunInput(text);
+                }
             };
         }
     }

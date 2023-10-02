@@ -6,6 +6,7 @@ namespace ProjectBriseis.objects.Logic.Console.Commands {
         }
 
         public override void _Run(string[] args) {
+            Log.Info("Bye.");
             GetTree().Quit();
         }
     }

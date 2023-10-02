@@ -24,10 +24,6 @@ LoggerAutoLoad="*res://objects/AutoLoad/LoggerAutoLoad.cs"
 
 project/assembly_name="Project Briseis"
 
-[editor_plugins]
-
-enabled=PackedStringArray()
-
 [input]
 
 console={
