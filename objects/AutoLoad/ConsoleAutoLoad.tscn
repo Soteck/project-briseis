@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://e06byemmpao"]
+[gd_scene load_steps=4 format=3 uid="uid://e06byemmpao"]
 
 [ext_resource type="Script" path="res://objects/AutoLoad/ConsoleAutoLoad.cs" id="1_d1ip2"]
+[ext_resource type="Script" path="res://objects/Logic/Console/ConsoleInterpreter.cs" id="2_gmqdy"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_84lsq"]
 bg_color = Color(0.25098, 0.211765, 0.215686, 1)
@@ -43,3 +44,6 @@ scroll_following = true
 
 [node name="LineEdit" type="LineEdit" parent="ConsoleContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="ConsoleInterpreter" type="Node" parent="."]
+script = ExtResource("2_gmqdy")

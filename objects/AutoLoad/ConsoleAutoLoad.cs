@@ -1,5 +1,6 @@
 using Godot;
 using ProjectBriseis.objects.Logic;
+using ProjectBriseis.objects.Logic.Console;
 
 namespace ProjectBriseis.objects.AutoLoad {
     public partial class ConsoleAutoLoad : Singleton<ConsoleAutoLoad> {
@@ -8,12 +9,14 @@ namespace ProjectBriseis.objects.AutoLoad {
         public RichTextLabel consoleLabel { get; private set; }
         public Control consoleContainer { get; private set; }
         public ScrollContainer scrollContainer { get; private set; }
+        public ConsoleInterpreter consoleInterpreter { get; private set; }
 
         public LineEdit lineEdit { get; private set; }
 
         public override void _SingletonReady() {
             consoleContainer = GetChild<Control>(0);
-            var vbox = consoleContainer.GetChild<Control>(0);
+            consoleInterpreter = GetChild<ConsoleInterpreter>(1);
+            Control vbox = consoleContainer.GetChild<Control>(0);
             scrollContainer = vbox.GetChild<ScrollContainer>(0);
             lineEdit = vbox.GetChild<LineEdit>(1);
             consoleLabel = scrollContainer.GetChild<RichTextLabel>(0);
@@ -51,6 +54,7 @@ namespace ProjectBriseis.objects.AutoLoad {
             return text => {
                 lineEdit.Clear();
                 Log.UserInput(text);
+                consoleInterpreter.RunInput(text);
             };
         }
     }

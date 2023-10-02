@@ -84,6 +84,11 @@ namespace ProjectBriseis.objects.AutoLoad {
         {
             AddText($"[color=\"yellow\"]{DateTime.Now:HH:mm:ss.fff} {message}[/color]");
         }
+
+        public void LogDebug(string message)
+        {
+            AddText($"[color=\"orange\"]{DateTime.Now:HH:mm:ss.fff} {message}[/color]");
+        }
         
         private class LogLine {
             public bool Drawn;
@@ -96,7 +101,7 @@ namespace ProjectBriseis.objects.AutoLoad {
             LoggerAutoLoad.instance.LogInfo(message);
         }
         public static void UserInput(string message) {
-            LoggerAutoLoad.instance.UserInput(message);
+            LoggerAutoLoad.instance.UserInput("<<< " + message);
         }
 
         public static void Error(string message) {
@@ -105,6 +110,10 @@ namespace ProjectBriseis.objects.AutoLoad {
 
         public static void Warning(string message) {
             LoggerAutoLoad.instance.LogWarning(message);
+        }
+
+        public static void Debug(string message) {
+            LoggerAutoLoad.instance.LogDebug(message);
         }
     }
 }
