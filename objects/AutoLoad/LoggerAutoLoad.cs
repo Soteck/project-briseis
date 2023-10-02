@@ -6,8 +6,8 @@ using ProjectBriseis.objects.Logic;
 namespace ProjectBriseis.objects.AutoLoad {
     public partial class LoggerAutoLoad  : Singleton<LoggerAutoLoad> {
 
-        private RichTextLabel ConsoleLabel;
-        private ScrollContainer ConsoleContainer;
+        private RichTextLabel _consoleLabel;
+        private ScrollContainer _consoleScrollContainer;
 
         private int _maxLines = 100;
         
@@ -20,13 +20,13 @@ namespace ProjectBriseis.objects.AutoLoad {
         
         public override void _SingletonReady()
         {
-            ConsoleLabel = ConsoleAutoLoad.instance.consoleLabel;
-            ConsoleContainer = ConsoleAutoLoad.instance.consoleContainer;
+            _consoleLabel = ConsoleAutoLoad.instance.consoleLabel;
+            _consoleScrollContainer = ConsoleAutoLoad.instance.scrollContainer;
             //TODO: Get _maxLines value from config
             
 
-            ConsoleLabel.Text = string.Empty;
-            AddText($"[color=\"white\"]{DateTime.Now.ToString("HH:mm:ss.fff")} {this.GetType().Name} enabled[/color]");
+            _consoleLabel.Text = string.Empty;
+            AddText($"[color=\"blue\"]{DateTime.Now.ToString("HH:mm:ss.fff")} {this.GetType().Name} enabled[/color]");
         }
         
         // private void OnEnable()
@@ -52,23 +52,27 @@ namespace ProjectBriseis.objects.AutoLoad {
         }
 
         private void DrawLog() {
-            if (ConsoleLabel != null) {
-                if (ConsoleLabel.Text.Length > ConsoleOverflow ) {
-                    ConsoleLabel.Text = ConsoleLabel.Text.Substring(ConsoleMaxLength, ConsoleLabel.Text.Length - ConsoleMaxLength);
+            if (_consoleLabel != null) {
+                if (_consoleLabel.Text.Length > ConsoleOverflow ) {
+                    _consoleLabel.Text = _consoleLabel.Text.Substring(ConsoleMaxLength, _consoleLabel.Text.Length - ConsoleMaxLength);
                 }
             
                 foreach (LogLine line in _lines) {
                     if (line.Drawn) continue;
-                    ConsoleLabel.AppendText(line.Data + '\n');
+                    _consoleLabel.AppendText(line.Data + '\n');
                     line.Drawn = true;
                 }
 
-                ConsoleContainer.ScrollVertical = (int) Math.Round(ConsoleContainer.Size.Y);
+                _consoleScrollContainer.ScrollVertical = (int) _consoleScrollContainer.GetVScrollBar().MaxValue;
             }
         }
 
         public void LogInfo(string message) {
             AddText($"[color=\"green\"]{DateTime.Now:HH:mm:ss.fff} {message}[/color]");
+        }
+
+        public void UserInput(string message) {
+            AddText($"[color=\"white\"]{DateTime.Now:HH:mm:ss.fff} {message}[/color]");
         }
 
         public void LogError(string message)
@@ -90,6 +94,9 @@ namespace ProjectBriseis.objects.AutoLoad {
     public abstract class Log {
         public static void Info(string message) {
             LoggerAutoLoad.instance.LogInfo(message);
+        }
+        public static void UserInput(string message) {
+            LoggerAutoLoad.instance.UserInput(message);
         }
 
         public static void Error(string message) {

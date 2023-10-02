@@ -1,6 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://bs0xu0p0jaej3"]
+[gd_scene load_steps=7 format=3 uid="uid://bs0xu0p0jaej3"]
 
 [ext_resource type="Script" path="res://scenes/MainScene.cs" id="1_1e234"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_lwvaw"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_l4ahe"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_t0d2d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7pakp"]
+albedo_color = Color(0.560784, 0.305882, 0.172549, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p8s17"]
 
 [node name="MainScene" type="Node3D"]
 script = ExtResource("1_1e234")
@@ -8,3 +19,37 @@ script = ExtResource("1_1e234")
 [node name="Node" type="Node" parent="."]
 
 [node name="Node" type="Node" parent="Node"]
+
+[node name="Camera3D" type="Camera3D" parent="Node"]
+transform = Transform3D(0.848048, 0.146066, -0.509391, 0, 0.961262, 0.275637, 0.529919, -0.233754, 0.815196, -2.44962, 3.70344, 3.5966)
+fov = 90.0
+
+[node name="Environment" type="Node" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment"]
+transform = Transform3D(25, 0, 0, 0, 0.2, 0, 0, 0, 25, 0, 0, 0)
+mesh = SubResource("BoxMesh_lwvaw")
+skeleton = NodePath("../..")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="Environment/MeshInstance3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/MeshInstance3D/RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+shape = SubResource("BoxShape3D_l4ahe")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, -2.95952, 10, 2.38634)
+
+[node name="Entities" type="Node" parent="."]
+
+[node name="Player" type="Node3D" parent="Entities"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Entities/Player"]
+mesh = SubResource("BoxMesh_t0d2d")
+surface_material_override/0 = SubResource("StandardMaterial3D_7pakp")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="Entities/Player"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Entities/Player/RigidBody3D"]
+shape = SubResource("BoxShape3D_p8s17")
