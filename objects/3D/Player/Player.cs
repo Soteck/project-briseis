@@ -6,6 +6,11 @@ namespace ProjectBriseis.objects._3D.Player {
         public override void _Ready() {
             
         }
+
+        [Rpc]
+        public void test() {
+            
+        }
         
     }
 }

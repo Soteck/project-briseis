@@ -9,6 +9,7 @@ namespace ProjectBriseis.objects.Logic.Console {
         
         private readonly Type[] _commandsTypes = {
             typeof(ConfigCommand),
+            typeof(NetCommand),
             typeof(QuitCommand)
         };
 
@@ -37,15 +38,11 @@ namespace ProjectBriseis.objects.Logic.Console {
         public void RunInput(string input) {
             string[] splitInput = input.Split(" ");
             if (_commandsDictionary.ContainsKey(splitInput[0])) {
+                int argSize = splitInput.Length - 1;
                 BaseCommand command = _commandsDictionary[splitInput[0]];
-                if (splitInput.Length < (command.paramNumber + 1)) {
-                    Log.Info("Not enough params. Expected : " + command.paramNumber + ", got: " +
-                             (splitInput.Length - 1));
-                    return;
-                }
 
-                string[] args = new string[command.paramNumber];
-                for (int i = 0; i < command.paramNumber; i++) {
+                string[] args = new string[argSize];
+                for (int i = 0; i < argSize; i++) {
                     args[i] = splitInput[i + 1];
                 }
 
@@ -58,11 +55,8 @@ namespace ProjectBriseis.objects.Logic.Console {
         public abstract partial class BaseCommand : Node {
             public string commandKey { get; private set; }
 
-            public int paramNumber { get; private set; }
-
-            protected BaseCommand(string key, int paramNumber) {
+            protected BaseCommand(string key) {
                 commandKey = key;
-                this.paramNumber = paramNumber;
             }
 
             public abstract void _Run(string[] args);
