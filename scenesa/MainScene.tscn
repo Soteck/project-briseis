@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://bs0xu0p0jaej3"]
 
-[ext_resource type="Script" path="res://scenes/MainScene.cs" id="1_1e234"]
+[ext_resource type="Script" path="res://scenesa/MainScene.cs" id="1_1e234"]
 [ext_resource type="PackedScene" uid="uid://16oen7aqw67i" path="res://objects/3D/player.tscn" id="2_olnxa"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_lwvaw"]
