@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d3hj8ssmajieu"]
+
+[ext_resource type="Script" path="res://Scripts/Scenes/StartupScene.cs" id="1_ly24i"]
+
+[node name="StartupScene" type="Node3D"]
+script = ExtResource("1_ly24i")

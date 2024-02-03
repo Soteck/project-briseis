@@ -39,17 +39,22 @@ namespace ProjectBriseis.objects.Logic.Console {
             string[] splitInput = input.Split(" ");
             if (_commandsDictionary.ContainsKey(splitInput[0])) {
                 int argSize = splitInput.Length - 1;
-                BaseCommand command = _commandsDictionary[splitInput[0]];
+                string command = splitInput[0];
 
                 string[] args = new string[argSize];
                 for (int i = 0; i < argSize; i++) {
                     args[i] = splitInput[i + 1];
                 }
 
-                command._Run(args);
+                RunInput(command, args);
             } else {
                 Log.Info("Command not found: " + input);
             }
+        }
+
+        public void RunInput(string command, string[] args) {
+            BaseCommand commandExec = _commandsDictionary[command];
+            commandExec._Run(args);
         }
 
         public abstract partial class BaseCommand : Node {

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Project Briseis"
-run/main_scene="res://Scenes/MainScene.tscn"
+run/main_scene="res://Scenes/StartupScene.tscn"
 config/features=PackedStringArray("4.2", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -21,7 +21,7 @@ ConsoleAutoLoad="*res://Scripts/AutoLoad/ConsoleAutoLoad.tscn"
 LoggerAutoLoad="*res://Scripts/AutoLoad/LoggerAutoLoad.cs"
 MultiplayerAutoLoad="*res://Scripts/AutoLoad/MultiplayerAutoLoad.cs"
 ConfigurationAutoLoad="*res://Scripts/AutoLoad/ConfigurationAutoLoad.cs"
-StartUpParamsAutoLoad="*res://Scripts/AutoLoad/StartUpParamsAutoLoad.cs"
+GlobalStateMachine="*res://Scripts/AutoLoad/GlobalStateMachine.cs"
 
 [dotnet]
 

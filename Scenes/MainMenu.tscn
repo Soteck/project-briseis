@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://dlc2d2e6mok7j"]
+
+[node name="MainMenu" type="Node3D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -338.5
+offset_top = -11.5
+offset_right = 338.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "Start menu (not implemented). Please run console commands (net host/net connect :ip)"

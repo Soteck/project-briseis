@@ -26,8 +26,7 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             // Load the configuration.
             _cfg = Configuration.LoadFromFile("config.cfg");
         }
-
-
+        
         private void SaveConfig() {
             Log.Info("Saving Client config...");
 
