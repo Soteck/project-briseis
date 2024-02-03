@@ -17,11 +17,11 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-ConsoleAutoLoad="*res://objects/AutoLoad/ConsoleAutoLoad.tscn"
-LoggerAutoLoad="*res://objects/AutoLoad/LoggerAutoLoad.cs"
-MultiplayerAutoLoad="*res://objects/AutoLoad/MultiplayerAutoLoad.cs"
-ConfigurationAutoLoad="*res://objects/AutoLoad/ConfigurationAutoLoad.cs"
-StartUpParamsAutoLoad="*res://objects/AutoLoad/StartUpParamsAutoLoad.cs"
+ConsoleAutoLoad="*res://Scripts/AutoLoad/ConsoleAutoLoad.tscn"
+LoggerAutoLoad="*res://Scripts/AutoLoad/LoggerAutoLoad.cs"
+MultiplayerAutoLoad="*res://Scripts/AutoLoad/MultiplayerAutoLoad.cs"
+ConfigurationAutoLoad="*res://Scripts/AutoLoad/ConfigurationAutoLoad.cs"
+StartUpParamsAutoLoad="*res://Scripts/AutoLoad/StartUpParamsAutoLoad.cs"
 
 [dotnet]
 

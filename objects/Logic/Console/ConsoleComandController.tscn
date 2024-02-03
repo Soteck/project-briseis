@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cmskl60xpaajf"]
 
 [ext_resource type="Script" path="res://objects/Logic/Console/ConsoleInterpreter.cs" id="1_lnsrr"]
-[ext_resource type="Script" path="res://objects/AutoLoad/StartUpParamsAutoLoad.cs" id="2_qlcce"]
+[ext_resource type="Script" path="res://Scripts/AutoLoad/StartUpParamsAutoLoad.cs" id="2_qlcce"]
 
 [node name="ConsoleComandController" type="Node"]
 
