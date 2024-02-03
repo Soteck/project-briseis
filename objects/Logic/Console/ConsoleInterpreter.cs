@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Godot;
-using ProjectBriseis.objects.AutoLoad;
 using ProjectBriseis.objects.Logic.Console.Commands;
+using ProjectBriseis.Scripts.AutoLoad;
 
 namespace ProjectBriseis.objects.Logic.Console {
     public partial class ConsoleInterpreter : Node {

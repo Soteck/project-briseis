@@ -1,4 +1,5 @@
-using ProjectBriseis.objects.AutoLoad;
+using ProjectBriseis.Scripts.AutoLoad;
+using ConfigurationAutoLoad = ProjectBriseis.Scripts.AutoLoad.ConfigurationAutoLoad;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands {
     public partial class ConfigCommand : ConsoleInterpreter.BaseCommand {

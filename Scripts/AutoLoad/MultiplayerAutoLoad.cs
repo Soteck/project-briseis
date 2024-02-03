@@ -2,7 +2,7 @@
 using Godot;
 using ProjectBriseis.objects.Logic;
 
-namespace ProjectBriseis.objects.AutoLoad {
+namespace ProjectBriseis.Scripts.AutoLoad {
     public partial class MultiplayerAutoLoad : Singleton<MultiplayerAutoLoad> {
         private const string DEFAULT_SERVER_IP = "127.0.0.1";
         private const int PORT = 27960;

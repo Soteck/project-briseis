@@ -1,4 +1,4 @@
-using ProjectBriseis.objects.AutoLoad;
+using ProjectBriseis.Scripts.AutoLoad;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands {
     public partial class QuitCommand : ConsoleInterpreter.BaseCommand {

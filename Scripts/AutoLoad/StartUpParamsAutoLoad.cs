@@ -2,7 +2,7 @@
 using Godot;
 using ProjectBriseis.objects.Logic;
 
-namespace ProjectBriseis.objects.AutoLoad {
+namespace ProjectBriseis.Scripts.AutoLoad {
     public partial class StartUpParamsAutoLoad : Singleton<StartUpParamsAutoLoad> {
         public override void _SingletonReady() {
             string[] args = OS.GetCmdlineArgs();
@@ -12,6 +12,7 @@ namespace ProjectBriseis.objects.AutoLoad {
                     if (tmpArgs.Count != 0) {
                         RunArgs(tmpArgs);
                     }
+
                     tmpArgs.Add(argument.Substring(2));
                 } else {
                     tmpArgs.Add(argument);
@@ -24,7 +25,7 @@ namespace ProjectBriseis.objects.AutoLoad {
         }
 
         private static void RunArgs(List<string> tmpArgs) {
-            ConsoleAutoLoad.instance.consoleInterpreter.RunInput(tmpArgs.ToArray().Join(" "));
+            Scripts.AutoLoad.ConsoleAutoLoad.instance.consoleInterpreter.RunInput(tmpArgs.ToArray().Join(" "));
             tmpArgs.Clear();
         }
     }

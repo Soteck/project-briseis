@@ -2,7 +2,7 @@ using Godot;
 using ProjectBriseis.objects.Logic;
 using ProjectBriseis.objects.Logic.Console;
 
-namespace ProjectBriseis.objects.AutoLoad {
+namespace ProjectBriseis.Scripts.AutoLoad {
     public partial class ConsoleAutoLoad : Singleton<ConsoleAutoLoad> {
         private bool _consoleDeployed = false;
         private float _originalContainerHeight = 0;

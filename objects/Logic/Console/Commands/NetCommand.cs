@@ -1,4 +1,4 @@
-using ProjectBriseis.objects.AutoLoad;
+using MultiplayerAutoLoad = ProjectBriseis.Scripts.AutoLoad.MultiplayerAutoLoad;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands {
     public partial class NetCommand : ConsoleInterpreter.BaseCommand {

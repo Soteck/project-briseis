@@ -3,7 +3,7 @@ using System.IO;
 using ProjectBriseis.objects.Logic;
 using SharpConfig;
 
-namespace ProjectBriseis.objects.AutoLoad {
+namespace ProjectBriseis.Scripts.AutoLoad {
     public partial class ConfigurationAutoLoad : Singleton<ConfigurationAutoLoad> {
         private Configuration _cfg = new Configuration();
         public static Action onConfigurationChange;
