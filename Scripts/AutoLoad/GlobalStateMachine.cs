@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using System;
+using Godot;
 using ProjectBriseis.objects.Logic;
 
 namespace ProjectBriseis.Scripts.AutoLoad;
@@ -12,33 +13,67 @@ public enum GlobalStates {
     Credits = 5
 }
 
-public partial class GlobalStateMachine : Singleton<GlobalStateMachine> {
+public enum StartPoint {
+    Intro = 0,
+    Menu = 1
+}
 
+public partial class GlobalStateMachine : Singleton<GlobalStateMachine> {
     private Node3D _loadedScene = null;
     private bool _started = false;
     private Node3D _startupScene;
-    public void Start(Node3D startupScene, GlobalStates startingState) {
+
+    private GlobalStates _state = GlobalStates.Launching;
+
+    [Signal]
+    public delegate void OnStatechangeEventHandler(GlobalStates newState, GlobalStates oldState);
+
+    public void Start(Node3D startupScene, StartPoint startingState) {
         if (_started) {
-            Log.Warning("Trying to start with state " + startingState  + " but states already started");
+            Log.Warning("Trying to start with state " + startingState + " but states already started");
             return;
         }
 
         _startupScene = startupScene;
+        CallDeferred("StartDeferred", (int) startingState);
+    }
+
+    private void StartDeferred(string startingStateS) {
+        Enum.TryParse(startingStateS, out StartPoint startingState);
         switch (startingState) {
-            case GlobalStates.MainMenu:
-                CallDeferred("LoadScene", "MainMenu.tscn");
+            case StartPoint.Menu:
+                LoadScene("MainMenu.tscn");
                 break;
-            case GlobalStates.Launching:
-            //TODO: Implement
-            case GlobalStates.Intro:
-            //TODO: Implement
+            case StartPoint.Intro:
             default:
-                CallDeferred("LoadScene", "Intro.tscn");
+                LoadScene("Intro.tscn");
                 break;
         }
     }
-    
-    public void LoadScene(string scenePath) {
+
+    public void ServerLoadMap(string mapName) {
+        Log.Info("Server Loading map: " + mapName);
+        Rpc("ClientLoadMapRpc", mapName);
+    }
+
+
+    [Rpc(
+            MultiplayerApi.RpcMode.AnyPeer,
+            TransferMode = MultiplayerPeer.TransferModeEnum.Reliable,
+            TransferChannel = 0)
+    ]
+    private void ClientLoadMapRpc(string mapName) {
+        Log.Info("Client loading map: " + mapName);
+        //get_tree().change_scene_to_file(game_scene_path)
+    }
+
+    private void TransitionState(GlobalStates newState) {
+        GlobalStates oldState = _state;
+        _state = newState;
+        EmitSignal(SignalName.OnStatechange, (int) newState, (int) oldState);
+    }
+
+    private void LoadScene(string scenePath) {
         if (_loadedScene != null) {
             _loadedScene.GetParent().RemoveChild(_loadedScene);
             return;
@@ -52,4 +87,7 @@ public partial class GlobalStateMachine : Singleton<GlobalStateMachine> {
         }
     }
 
+    public GlobalStates CurrentState() {
+        return _state;
+    }
 }

@@ -8,7 +8,7 @@ namespace ProjectBriseis.Scripts.Scenes;
 
 public partial class StartupScene : Node3D {
 
-    private GlobalStates _startingState = GlobalStates.MainMenu;
+    private StartPoint _startingState = StartPoint.Menu;
     
     private const string StartupStateKey = "StartupState";
     public override void _Ready() {

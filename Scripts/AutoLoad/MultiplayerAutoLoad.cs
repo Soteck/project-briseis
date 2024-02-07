@@ -1,43 +1,62 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Godot;
 using ProjectBriseis.objects.Logic;
 
 namespace ProjectBriseis.Scripts.AutoLoad {
+
+    public struct PlayerConnection {
+        public long Id;
+        public GlobalStates Status;
+        public string Nickname;
+    }
     public partial class MultiplayerAutoLoad : Singleton<MultiplayerAutoLoad> {
         private const string DEFAULT_SERVER_IP = "127.0.0.1";
         private const int PORT = 27960;
         private const int MAX_CONNECTIONS = 24;
 
-        private Dictionary<int, string> players = new Dictionary<int, string>();
+        private Dictionary<long, PlayerConnection> _players = new Dictionary<long, PlayerConnection>();
 
         [Signal]
-        public delegate void OnPlayerConnectedEventHandler(long peerId, string playerInfo);
+        public delegate void OnPlayersChangeEventHandler(long id, string playerInfoEncoded);
+
+        [Signal]
+        public delegate void OnPlayerDisconnectEventHandler(long id);
 
         public override void _SingletonReady() {
-            Multiplayer.PeerConnected += PeerConnected;
-            Multiplayer.PeerDisconnected += PeerDisconnected;
-            Multiplayer.ConnectedToServer += ConnectedToServer;
-            Multiplayer.ConnectionFailed += ConnectionFailed;
+            Multiplayer.PeerConnected += ServerPeerConnected;
+            Multiplayer.PeerDisconnected += ServerPeerDisconnected;
+            Multiplayer.ConnectedToServer += ClientConnectedToServer;
+            Multiplayer.ConnectionFailed += ClientConnectionFailed;
+            OnPlayersChange += ServerNotifyChange; 
+            OnPlayerDisconnect += id => ServerNotifyChange(id, null);
         }
 
-        private void ConnectionFailed() {
-            Log.Info("Connection failed");
+        private void ServerNotifyChange(long id, string playerInfo) {
+            Rpc("ClientOnPlayersChange", id, playerInfo);
+        }
+        
+        private void ClientConnectionFailed() {
+            Log.Info("Client connection failed");
         }
 
-        private void ConnectedToServer() {
-            Log.Info("Connected to the server");
+        private void ClientConnectedToServer() {
+            Log.Info("Client connected to the server");
         }
 
-        private void PeerDisconnected(long id) {
-            Log.Info("Peer with id " + id + " disconnected");
+        private void ServerPeerDisconnected(long id) {
+            Log.Info("Server: Peer with id " + id + " disconnected");
+            _players.Remove(id);
+            EmitSignal(SignalName.OnPlayerDisconnect, id);
         }
 
-        private void PeerConnected(long id) {
-            Log.Info("Peer with id " + id + " conneected");
+        private void ServerPeerConnected(long id) {
+            Log.Info("Server: Peer with id " + id + " connected");
+            RpcId(id, "ClientSendInformation");
         }
 
         public void Connect(string address) {
-            if (address == null || address.Length < 1) {
+            if (string.IsNullOrEmpty(address)) {
                 address = DEFAULT_SERVER_IP;
             }
 
@@ -58,14 +77,90 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             }
 
             Multiplayer.MultiplayerPeer = peer;
+            
+            const long id = 1;
+            PlayerConnection connection = new() {
+                Id = id,
+                Nickname = ConfigurationAutoLoad.playerName,
+                Status = GlobalStateMachine.instance.CurrentState()
+            };
 
-
-            players[1] = "test1";
-            EmitSignal(SignalName.OnPlayerConnected, 1, players[1]);
+            EmitSignal(SignalName.OnPlayersChange, id, EncodePlayerConnection(connection));
         }
 
         public void Disconnect() {
             throw new System.NotImplementedException();
+        }
+
+        public void LoadMap(string mapName) {
+            if (!Multiplayer.IsServer()) {
+                Log.Error("Cannot load map. Host server is not running.");
+                return;
+            }
+            GlobalStateMachine.instance.ServerLoadMap(mapName);
+
+        }
+        
+        
+
+        [Rpc(
+                MultiplayerApi.RpcMode.AnyPeer,
+                TransferMode = MultiplayerPeer.TransferModeEnum.Reliable,
+                TransferChannel = 0)
+        ]
+        private void ClientOnPlayersChange(long id, string connectionStr) {
+            if (connectionStr == null) {
+                _players.Remove(id);
+            }else
+            {
+                PlayerConnection connection = DecodePlayerConnection(connectionStr);
+                _players[id] = connection;
+            }
+            Log.Info("Client is notified about a players count change: " + id);
+        }
+        
+        
+
+        [Rpc(
+                MultiplayerApi.RpcMode.AnyPeer,
+                TransferMode = MultiplayerPeer.TransferModeEnum.Reliable,
+                TransferChannel = 0)
+        ]
+        private void ClientSendInformation() {
+            PlayerConnection connection = new() {
+                Id = Multiplayer.GetUniqueId(),
+                Nickname = ConfigurationAutoLoad.playerName,
+                Status = GlobalStateMachine.instance.CurrentState()
+            };
+            Rpc("ServerReceivePlayerInformation", EncodePlayerConnection(connection));
+        }
+        
+        [Rpc(
+                MultiplayerApi.RpcMode.AnyPeer,
+                TransferMode = MultiplayerPeer.TransferModeEnum.Reliable,
+                TransferChannel = 0)
+        ]
+        private void ServerReceivePlayerInformation(string connectionStr) {
+            if (connectionStr != null) {
+                PlayerConnection connection = DecodePlayerConnection(connectionStr);
+                _players[connection.Id] = connection;
+                EmitSignal(SignalName.OnPlayersChange, EncodePlayerConnection(connection));
+            }
+            Log.Info("Server received update of a player info change: " + connectionStr);
+        }
+
+        private string EncodePlayerConnection(PlayerConnection connection) {
+            return connection.Id + ";" + connection.Nickname + ";" + (int) connection.Status;
+        }
+
+        private PlayerConnection DecodePlayerConnection(string connectionStr) {
+            string[] parts = connectionStr.Split(";");
+            PlayerConnection connection = new() {
+                Id = (long) Convert.ToDouble(parts[0]),
+                Nickname = parts[1],
+                Status = (GlobalStates) Convert.ToDouble(parts[2])
+            };
+            return connection;
         }
     }
 }

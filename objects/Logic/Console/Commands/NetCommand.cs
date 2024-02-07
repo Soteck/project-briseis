@@ -8,20 +8,26 @@ namespace ProjectBriseis.objects.Logic.Console.Commands {
 
         public override void _Run(string[] args) {
             string subcommand = args[0];
+            string firstArg = null;
+            if (args.Length > 1) {
+                firstArg = args[1];
+            }
             switch (subcommand) {
                 case "host":
                     MultiplayerAutoLoad.instance.Host();
                     break;
                 case "connect":
-                    MultiplayerAutoLoad.instance.Connect(args[1]);
+                    MultiplayerAutoLoad.instance.Connect(firstArg);
                     break;
                 case "disconnect":
                     MultiplayerAutoLoad.instance.Disconnect();
                     break;
+                case "map":
+                    MultiplayerAutoLoad.instance.LoadMap(firstArg);
+                    break;
                     default:
                     break;
             }
-            
             
         }
     }
