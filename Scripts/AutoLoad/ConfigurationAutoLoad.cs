@@ -35,7 +35,7 @@ namespace ProjectBriseis.Scripts.AutoLoad {
         }
 
         private void DoResetConfig() {
-            Log.Info("Reseting all config...");
+            Log.Info("Resetting all config...");
             this.SetupCleanCfg();
             // Save the configuration.
             _cfg.SaveToFile("config.cfg");

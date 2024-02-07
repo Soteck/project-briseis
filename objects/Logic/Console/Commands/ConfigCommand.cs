@@ -34,20 +34,27 @@ namespace ProjectBriseis.objects.Logic.Console.Commands {
             string oldValue = "";
             switch (parameter) {
                 case "sensitivity": {
+                    oldValue = ConfigurationAutoLoad.mouseSensitivity.ToString();
+
                     if (write) {
                         ConfigurationAutoLoad.mouseSensitivity = float.Parse(args[1]);
                     }
 
-                    oldValue = ConfigurationAutoLoad.mouseSensitivity.ToString();
-
-
                     break;
                 }
                 case "invertMouse": {
+                    oldValue = ConfigurationAutoLoad.invertMouse.ToString();
                     if (write) {
                         ConfigurationAutoLoad.invertMouse = bool.Parse(args[1]);
                     }
-                    oldValue = ConfigurationAutoLoad.invertMouse.ToString();
+
+                    break;
+                }
+                case "PlayerName": {
+                    oldValue = ConfigurationAutoLoad.playerName;
+                    if (write) {
+                        ConfigurationAutoLoad.playerName = args[1];
+                    }
 
                     break;
                 }
