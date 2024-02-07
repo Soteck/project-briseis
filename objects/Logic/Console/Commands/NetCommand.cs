@@ -1,7 +1,9 @@
 using MultiplayerAutoLoad = ProjectBriseis.Scripts.AutoLoad.MultiplayerAutoLoad;
+using Godot;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands {
     public partial class NetCommand : ConsoleInterpreter.BaseCommand {
+        private string[] _subCommands = new[] {"host", "connect", "disconnect", "map"};
         
         public NetCommand() : base("net") {
         }
@@ -29,6 +31,27 @@ namespace ProjectBriseis.objects.Logic.Console.Commands {
                     break;
             }
             
+        }
+
+        public override string AutoComplete(string[] input) {
+            if (input.Length == 2) {
+                string s = input[1];
+                string found = null;
+                foreach (string subCommand in _subCommands) {
+                    if (subCommand.StartsWith(s)) {
+                        if (found != null) {
+                            return null;
+                        } else {
+                            found = subCommand;
+                        }
+                    }
+                }
+
+                input[1] = found;
+                return input.Join(" ");
+            }
+            
+            return null;
         }
     }
 }

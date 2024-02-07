@@ -35,6 +35,14 @@ namespace ProjectBriseis.Scripts.AutoLoad {
                     Undeploy();
                 }
             }
+
+            if (_consoleDeployed && Input.IsActionJustReleased("autocomplete")) {
+                string res = consoleInterpreter.AutoComplete(lineEdit.Text);
+                if (res != null) {
+                    lineEdit.Text = res;
+                    lineEdit.CaretColumn = lineEdit.Text.Length;
+                }
+            }
         }
 
         private void Undeploy() {

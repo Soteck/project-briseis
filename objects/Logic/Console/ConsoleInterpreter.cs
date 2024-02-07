@@ -6,7 +6,6 @@ using ProjectBriseis.Scripts.AutoLoad;
 
 namespace ProjectBriseis.objects.Logic.Console {
     public partial class ConsoleInterpreter : Node {
-        
         private readonly Type[] _commandsTypes = {
             typeof(ConfigCommand),
             typeof(NetCommand),
@@ -57,6 +56,30 @@ namespace ProjectBriseis.objects.Logic.Console {
             commandExec._Run(args);
         }
 
+        public string AutoComplete(string input) {
+            string[] inputSplit = input.Split(" ");
+            BaseCommand found = null;
+            foreach (KeyValuePair<string, BaseCommand> valuePair in _commandsDictionary) {
+                if (valuePair.Key.StartsWith(inputSplit[0])) {
+                    if (found != null) {
+                        return null;
+                    } else {
+                        found = valuePair.Value;
+                    }
+                }
+            }
+
+            if (found == null) {
+                return null;
+            }
+
+            if (inputSplit.Length > 1) {
+                return found.AutoComplete(inputSplit);
+            }
+
+            return found.commandKey;
+        }
+
         public abstract partial class BaseCommand : Node {
             public string commandKey { get; private set; }
 
@@ -65,6 +88,10 @@ namespace ProjectBriseis.objects.Logic.Console {
             }
 
             public abstract void _Run(string[] args);
+
+            public virtual string AutoComplete(string[] input) {
+                return null;
+            }
         }
     }
 }
