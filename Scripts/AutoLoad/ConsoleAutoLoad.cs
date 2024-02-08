@@ -39,7 +39,7 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             if (_consoleDeployed && Input.IsActionJustReleased("autocomplete")) {
                 string res = consoleInterpreter.AutoComplete(lineEdit.Text);
                 if (res != null) {
-                    lineEdit.Text = res;
+                    lineEdit.Text = res + " ";
                     lineEdit.CaretColumn = lineEdit.Text.Length;
                 }
             }
