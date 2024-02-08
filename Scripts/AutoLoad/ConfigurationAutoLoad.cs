@@ -15,18 +15,18 @@ namespace ProjectBriseis.Scripts.AutoLoad {
         private const int ServerDefaultMaxEnergy = 100;
         private const bool DefaultAutoReload = true;
         private const bool DefaultInvertMouse = true;
-
-        private void Start() {
+        
+        public override void _SingletonReady() {
             if (!File.Exists("config.cfg")) {
                 Log.Info("Setting up a default config since no file was found!");
                 SetupCleanCfg();
                 SaveConfig();
+            } else {
+                // Load the configuration.
+                _cfg = Configuration.LoadFromFile("config.cfg");
             }
-
-            // Load the configuration.
-            _cfg = Configuration.LoadFromFile("config.cfg");
         }
-        
+
         private void SaveConfig() {
             Log.Info("Saving Client config...");
 
@@ -128,6 +128,10 @@ namespace ProjectBriseis.Scripts.AutoLoad {
                 instance._cfg["Server"]["MaxEnergy"].IntValue = value;
                 instance.ShouldSave();
             }
+        }
+
+        public void Print() {
+            Log.Info(_cfg.StringRepresentation);
         }
 
         public static float constantOfGravity => 9.81f;

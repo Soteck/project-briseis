@@ -100,6 +100,15 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             GlobalStateMachine.instance.ServerLoadMap(mapName);
 
         }
+
+        public List<PlayerConnection> GetPlayers() {
+            List<PlayerConnection> ret = new();
+            foreach (KeyValuePair<long,PlayerConnection> pair in _players) {
+                ret.Add(pair.Value);
+            }
+
+            return ret;
+        }
         
         
 

@@ -2,7 +2,7 @@ using ProjectBriseis.Scripts.AutoLoad;
 using ConfigurationAutoLoad = ProjectBriseis.Scripts.AutoLoad.ConfigurationAutoLoad;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands {
-    public partial class ConfigCommand : ConsoleInterpreter.BaseCommand {
+    public partial class ConfigCommand : BaseCommand {
         public ConfigCommand() : base("config") {
         }
 
@@ -20,6 +20,11 @@ namespace ProjectBriseis.objects.Logic.Console.Commands {
             if (args[0] == "reset") {
                 ConfigurationAutoLoad.ResetConfig();
                 Log.Info("Configuration reset!");
+                return;
+            }
+
+            if (args[0] == "print") {
+                ConfigurationAutoLoad.instance.Print();
                 return;
             }
 
@@ -72,6 +77,10 @@ namespace ProjectBriseis.objects.Logic.Console.Commands {
             } else {
                 Log.Warning("Config not applied");
             }
+        }
+
+        public override string[][] GetSubCommands() {
+            return new string[][] {new string[] {"write", "reset", "print"}};
         }
     }
 }

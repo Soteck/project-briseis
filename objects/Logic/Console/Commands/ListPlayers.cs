@@ -1,13 +1,14 @@
 using ProjectBriseis.Scripts.AutoLoad;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands {
-    public partial class QuitCommand : BaseCommand {
-        public QuitCommand() : base("quit") {
+    public partial class ListPlayers : BaseCommand {
+        public ListPlayers() : base("listplayers") {
         }
 
         public override void _Run(string[] args) {
-            Log.Info("Bye.");
-            GetTree().Quit();
+            foreach (var player in MultiplayerAutoLoad.instance.GetPlayers()) {
+                Log.Info(player.Id + "\t" + player.Nickname);
+            }
         }
 
         public override string[][] GetSubCommands() {

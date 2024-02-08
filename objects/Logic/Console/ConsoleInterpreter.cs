@@ -9,6 +9,7 @@ namespace ProjectBriseis.objects.Logic.Console {
         private readonly Type[] _commandsTypes = {
             typeof(ConfigCommand),
             typeof(NetCommand),
+            typeof(ListPlayers),
             typeof(QuitCommand)
         };
 
@@ -57,7 +58,7 @@ namespace ProjectBriseis.objects.Logic.Console {
         }
 
         public string AutoComplete(string input) {
-            string[] inputSplit = input.Split(" ");
+            string[] inputSplit = input.Trim().Split(" ");
             BaseCommand found = null;
             foreach (KeyValuePair<string, BaseCommand> valuePair in _commandsDictionary) {
                 if (valuePair.Key.StartsWith(inputSplit[0])) {
@@ -77,21 +78,8 @@ namespace ProjectBriseis.objects.Logic.Console {
                 return found.AutoComplete(inputSplit);
             }
 
-            return found.commandKey;
+            return found.commandKey  + " ";
         }
-
-        public abstract partial class BaseCommand : Node {
-            public string commandKey { get; private set; }
-
-            protected BaseCommand(string key) {
-                commandKey = key;
-            }
-
-            public abstract void _Run(string[] args);
-
-            public virtual string AutoComplete(string[] input) {
-                return null;
-            }
-        }
+        
     }
 }
