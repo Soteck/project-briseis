@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bs0xu0p0jaej3"]
+[gd_scene load_steps=8 format=3 uid="uid://bs0xu0p0jaej3"]
 
 [ext_resource type="Script" path="res://Scripts/Maps/Develop/DevelopMap.cs" id="1_lf2sq"]
-[ext_resource type="PackedScene" uid="uid://16oen7aqw67i" path="res://objects/3D/player.tscn" id="2_j1v8t"]
+[ext_resource type="Material" uid="uid://w7vfhy8sq1iq" path="res://Art/Materials/RedStandard.tres" id="2_hxhfv"]
+[ext_resource type="PackedScene" uid="uid://16oen7aqw67i" path="res://Prefabs/Player/player.tscn" id="2_j1v8t"]
+[ext_resource type="Material" uid="uid://drnvhqeetl0gf" path="res://Art/Materials/BlueStandard.tres" id="3_pqp6u"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_lwvaw"]
 
@@ -46,6 +48,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5, 6.25, 0)
 transform = Transform3D(0.25, 0, 0, 0, 12.5, 0, 0, 0, 25, 0, 0, 0)
 mesh = SubResource("BoxMesh_lwvaw")
 skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_hxhfv")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/WALLS/SB1"]
 shape = SubResource("BoxShape3D_tceju")
@@ -57,6 +60,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.5, 6.25, 0)
 transform = Transform3D(0.25, 0, 0, 0, 12.5, 0, 0, 0, 25, 0, 0, 0)
 mesh = SubResource("BoxMesh_lwvaw")
 skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_hxhfv")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/WALLS/SB2"]
 shape = SubResource("BoxShape3D_tceju")
@@ -68,6 +72,7 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 6.2
 transform = Transform3D(0.25, 0, 0, 0, 12.5, 0, 0, 0, 25, 0, 0, 0)
 mesh = SubResource("BoxMesh_lwvaw")
 skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("3_pqp6u")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/WALLS/SB3"]
 shape = SubResource("BoxShape3D_tceju")
@@ -79,6 +84,7 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 6.2
 transform = Transform3D(0.25, 0, 0, 0, 12.5, 0, 0, 0, 25, 0, 0, 0)
 mesh = SubResource("BoxMesh_lwvaw")
 skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("3_pqp6u")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/WALLS/SB4"]
 shape = SubResource("BoxShape3D_tceju")

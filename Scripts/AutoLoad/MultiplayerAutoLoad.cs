@@ -24,11 +24,17 @@ namespace ProjectBriseis.Scripts.AutoLoad {
         [Signal]
         public delegate void OnPlayerDisconnectEventHandler(long id);
 
+        [Signal]
+        public delegate void OnClientStatusChangeEventHandler(bool connected);
+
+        public bool clientConnectionStatus { private set; get; } = false;
+
         public override void _SingletonReady() {
             Multiplayer.PeerConnected += ServerPeerConnected;
             Multiplayer.PeerDisconnected += ServerPeerDisconnected;
             Multiplayer.ConnectedToServer += ClientConnectedToServer;
             Multiplayer.ConnectionFailed += ClientConnectionFailed;
+            Multiplayer.ServerDisconnected += ClientDisconnectedFromServer;
             OnPlayersChange += ServerRegisterNotifyChange; 
             OnPlayerDisconnect += id => ServerRegisterNotifyChange(id, null);
             ConfigurationAutoLoad.instance.OnConfigurationChange += OnMyConfigurationChanged;
@@ -61,6 +67,14 @@ namespace ProjectBriseis.Scripts.AutoLoad {
 
         private void ClientConnectedToServer() {
             Log.Info("Client connected to the server");
+            clientConnectionStatus = true;
+            EmitSignal(SignalName.OnClientStatusChange, true);
+        }
+
+        private void ClientDisconnectedFromServer() {
+            Log.Info("Client connected from the server");
+            clientConnectionStatus = false;
+            EmitSignal(SignalName.OnClientStatusChange, false);
         }
 
         private void ServerPeerDisconnected(long id) {
@@ -122,7 +136,7 @@ namespace ProjectBriseis.Scripts.AutoLoad {
         }
 
         public void Disconnect() {
-            throw new System.NotImplementedException();
+            Multiplayer.MultiplayerPeer.Close();
         }
 
         public void LoadMap(string mapName) {

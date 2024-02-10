@@ -1,7 +1,11 @@
 using Godot;
 
-namespace ProjectBriseis.objects._3D.Player {
-    public partial class Player : CharacterBody3D {
+namespace ProjectBriseis.Scripts.Player.Controller {
+    
+    public partial class OfflinePlayerController : Node {
+        [Export]
+        private CharacterBody3D _characterBody3D;
+        
         public const float Speed = 5.0f;
         public const float JumpVelocity = 4.5f;
 
@@ -10,20 +14,20 @@ namespace ProjectBriseis.objects._3D.Player {
 
         public override void _PhysicsProcess(double delta)
         {
-            Vector3 velocity = Velocity;
+            Vector3 velocity = _characterBody3D.Velocity;
 
             // Add the gravity.
-            if (!IsOnFloor())
+            if (!_characterBody3D.IsOnFloor())
                 velocity.Y -= gravity * (float)delta;
 
             // Handle Jump.
-            if (Input.IsActionJustPressed("ui_accept") && IsOnFloor())
+            if (Input.IsActionJustPressed("ui_accept") && _characterBody3D.IsOnFloor())
                 velocity.Y = JumpVelocity;
 
             // Get the input direction and handle the movement/deceleration.
             // As good practice, you should replace UI actions with custom gameplay actions.
             Vector2 inputDir = Input.GetVector("left", "right", "forward", "backward");
-            Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+            Vector3 direction = (_characterBody3D.Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
             if (direction != Vector3.Zero)
             {
                 velocity.X = direction.X * Speed;
@@ -31,12 +35,12 @@ namespace ProjectBriseis.objects._3D.Player {
             }
             else
             {
-                velocity.X = Mathf.MoveToward(Velocity.X, 0, Speed);
-                velocity.Z = Mathf.MoveToward(Velocity.Z, 0, Speed);
+                velocity.X = Mathf.MoveToward(_characterBody3D.Velocity.X, 0, Speed);
+                velocity.Z = Mathf.MoveToward(_characterBody3D.Velocity.Z, 0, Speed);
             }
 
-            Velocity = velocity;
-            MoveAndSlide();
+            _characterBody3D.Velocity = velocity;
+            _characterBody3D.MoveAndSlide();
         }
     }
 }
