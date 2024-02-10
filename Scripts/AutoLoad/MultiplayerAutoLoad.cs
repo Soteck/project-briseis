@@ -15,7 +15,8 @@ namespace ProjectBriseis.Scripts.AutoLoad {
         private const int PORT = 27960;
         private const int MAX_CONNECTIONS = 24;
 
-        private Dictionary<long, PlayerConnection> _players = new Dictionary<long, PlayerConnection>();
+        private readonly Dictionary<long, PlayerConnection> _players = new Dictionary<long, PlayerConnection>();
+        private long _myMultiplayerId;
 
         [Signal]
         public delegate void OnPlayersChangeEventHandler(long id, string playerInfoEncoded);
@@ -28,11 +29,29 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             Multiplayer.PeerDisconnected += ServerPeerDisconnected;
             Multiplayer.ConnectedToServer += ClientConnectedToServer;
             Multiplayer.ConnectionFailed += ClientConnectionFailed;
-            OnPlayersChange += ServerNotifyChange; 
-            OnPlayerDisconnect += id => ServerNotifyChange(id, null);
+            OnPlayersChange += ServerRegisterNotifyChange; 
+            OnPlayerDisconnect += id => ServerRegisterNotifyChange(id, null);
+            ConfigurationAutoLoad.instance.OnConfigurationChange += OnMyConfigurationChanged;
         }
 
-        private void ServerNotifyChange(long id, string playerInfo) {
+        private void OnMyConfigurationChanged(string[] key, Variant value) {
+            if (key is {Length: 2}) {
+                if (key[0] == "Player" && key[1] == "Name") {
+                    if (Multiplayer.IsServer()) {
+                        PlayerConnection playerConnection = _players[_myMultiplayerId];
+                        playerConnection.Nickname = ConfigurationAutoLoad.playerName;
+                        _players[_myMultiplayerId] = playerConnection;
+                        EmitSignal(SignalName.OnPlayersChange, _myMultiplayerId,
+                                   EncodePlayerConnection(playerConnection));
+                    } else {
+                        ClientSendInformation();
+                    }
+                }
+            }
+        }
+
+        private void ServerRegisterNotifyChange(long id, string playerInfo) {
+            _players[id] = DecodePlayerConnection(playerInfo);
             Rpc("ClientOnPlayersChange", id, playerInfo);
         }
         
@@ -52,7 +71,19 @@ namespace ProjectBriseis.Scripts.AutoLoad {
 
         private void ServerPeerConnected(long id) {
             Log.Info("Server: Peer with id " + id + " connected");
+            
+            PlayerConnection connection = new() {
+                Id = id,
+                Status = GlobalStates.Connecting
+            };
+
+            EmitSignal(SignalName.OnPlayersChange, id, EncodePlayerConnection(connection));
             RpcId(id, "ClientSendInformation");
+
+            foreach (KeyValuePair<long,PlayerConnection> playerConnection in _players) {
+                RpcId(id, "ClientOnPlayersChange", 
+                      playerConnection.Key, EncodePlayerConnection(playerConnection.Value));
+            }
         }
 
         public void Connect(string address) {
@@ -67,6 +98,7 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             }
 
             Multiplayer.MultiplayerPeer = peer;
+            _myMultiplayerId = Multiplayer.GetUniqueId();
         }
 
         public void Host() {
@@ -79,6 +111,7 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             Multiplayer.MultiplayerPeer = peer;
             
             const long id = 1;
+            _myMultiplayerId = id;
             PlayerConnection connection = new() {
                 Id = id,
                 Nickname = ConfigurationAutoLoad.playerName,
@@ -141,6 +174,7 @@ namespace ProjectBriseis.Scripts.AutoLoad {
                 Nickname = ConfigurationAutoLoad.playerName,
                 Status = GlobalStateMachine.instance.CurrentState()
             };
+            _players[connection.Id] = connection;
             Rpc("ServerReceivePlayerInformation", EncodePlayerConnection(connection));
         }
         

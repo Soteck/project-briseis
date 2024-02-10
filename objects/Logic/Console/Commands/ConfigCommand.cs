@@ -80,7 +80,10 @@ namespace ProjectBriseis.objects.Logic.Console.Commands {
         }
 
         public override string[][] GetSubCommands() {
-            return new string[][] {new string[] {"write", "reset", "print"}};
+            return new string[][] {new string[] {
+                "write", "reset", "print", "sensitivity", "invertMouse", "PlayerName"
+                
+            }};
         }
     }
 }

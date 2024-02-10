@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Godot;
 using ProjectBriseis.objects.Logic;
 using SharpConfig;
 
@@ -15,7 +16,11 @@ namespace ProjectBriseis.Scripts.AutoLoad {
         private const int ServerDefaultMaxEnergy = 100;
         private const bool DefaultAutoReload = true;
         private const bool DefaultInvertMouse = true;
-        
+
+
+        [Signal]
+        public delegate void OnConfigurationChangeEventHandler(string[] key, Variant value);
+
         public override void _SingletonReady() {
             if (!File.Exists("config.cfg")) {
                 Log.Info("Setting up a default config since no file was found!");
@@ -73,6 +78,10 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             set {
                 instance._cfg["Configuration"]["AutoSave"].BoolValue = value;
                 instance.ShouldSave();
+                instance.EmitSignal(
+                                    SignalName.OnConfigurationChange,
+                                    new[] {"Configuration", "AutoSave"}, value
+                                   );
             }
         }
 
@@ -82,6 +91,10 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             set {
                 instance._cfg["Player"]["Name"].StringValue = value;
                 instance.ShouldSave();
+                instance.EmitSignal(
+                                    SignalName.OnConfigurationChange,
+                                    new[] {"Player", "Name"}, value
+                                   );
             }
         }
 
@@ -91,6 +104,10 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             set {
                 instance._cfg["Input"]["MouseSensitivity"].FloatValue = value;
                 instance.ShouldSave();
+                instance.EmitSignal(
+                                    SignalName.OnConfigurationChange,
+                                    new[] {"Input", "MouseSensitivity"}, value
+                                   );
             }
         }
 
@@ -100,6 +117,10 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             set {
                 instance._cfg["Server"]["AutoBalance"].BoolValue = value;
                 instance.ShouldSave();
+                instance.EmitSignal(
+                                    SignalName.OnConfigurationChange,
+                                    new[] {"Server", "AutoBalance"}, value
+                                   );
             }
         }
 
@@ -109,6 +130,10 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             set {
                 instance._cfg["Weapons"]["AutoReload"].BoolValue = value;
                 instance.ShouldSave();
+                instance.EmitSignal(
+                                    SignalName.OnConfigurationChange,
+                                    new[] {"Weapons", "AutoReload"}, value
+                                   );
             }
         }
 
@@ -118,6 +143,10 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             set {
                 instance._cfg["Input"]["InvertMouse"].BoolValue = value;
                 instance.ShouldSave();
+                instance.EmitSignal(
+                                    SignalName.OnConfigurationChange,
+                                    new[] {"Input", "InvertMouse"}, value
+                                   );
             }
         }
 
@@ -127,6 +156,10 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             set {
                 instance._cfg["Server"]["MaxEnergy"].IntValue = value;
                 instance.ShouldSave();
+                instance.EmitSignal(
+                                    SignalName.OnConfigurationChange,
+                                    new[] {"Server", "MaxEnergy"}, value
+                                   );
             }
         }
 

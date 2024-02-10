@@ -36,7 +36,7 @@ namespace ProjectBriseis.objects.Logic.Console {
 
 
         public void RunInput(string input) {
-            string[] splitInput = input.Split(" ");
+            string[] splitInput = input.Trim().Split(" ");
             if (_commandsDictionary.ContainsKey(splitInput[0])) {
                 int argSize = splitInput.Length - 1;
                 string command = splitInput[0];

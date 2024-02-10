@@ -19,8 +19,8 @@ config/icon="res://icon.svg"
 
 ConsoleAutoLoad="*res://Scripts/AutoLoad/ConsoleAutoLoad.tscn"
 LoggerAutoLoad="*res://Scripts/AutoLoad/LoggerAutoLoad.cs"
-MultiplayerAutoLoad="*res://Scripts/AutoLoad/MultiplayerAutoLoad.cs"
 ConfigurationAutoLoad="*res://Scripts/AutoLoad/ConfigurationAutoLoad.cs"
+MultiplayerAutoLoad="*res://Scripts/AutoLoad/MultiplayerAutoLoad.cs"
 GlobalStateMachine="*res://Scripts/AutoLoad/GlobalStateMachine.cs"
 
 [dotnet]

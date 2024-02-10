@@ -24,7 +24,8 @@ public abstract partial class BaseCommand : Node {
 
         return AutoComplete(input, commands);
     }
-    public string AutoComplete(string[] input, string[][] commands) {
+
+    private string AutoComplete(string[] input, string[][] commands) {
         int inputPosition = input.Length -1;
         if (inputPosition  <= commands.Length) {
             string s = input[inputPosition];
