@@ -1,0 +1,21 @@
+[gd_scene load_steps=5 format=3 uid="uid://cekhyjmwjexhw"]
+
+[ext_resource type="Script" path="res://Scripts/AutoLoad/Multiplayer/MultiplayerAutoLoad.cs" id="1_n8mfb"]
+[ext_resource type="Script" path="res://Scripts/AutoLoad/Multiplayer/PlayerSpawner.cs" id="2_0ml36"]
+[ext_resource type="Script" path="res://Scripts/AutoLoad/Multiplayer/MapLoader.cs" id="3_jyv6g"]
+[ext_resource type="Script" path="res://Scripts/AutoLoad/Multiplayer/MatchManager.cs" id="4_2kxfw"]
+
+[node name="MultiplayerAutoLoad" type="Node" node_paths=PackedStringArray("_matchManager", "_playerSpawner", "_mapLoader")]
+script = ExtResource("1_n8mfb")
+_matchManager = NodePath("MatchManager")
+_playerSpawner = NodePath("PlayerSpawner")
+_mapLoader = NodePath("MapLoader")
+
+[node name="PlayerSpawner" type="Node" parent="."]
+script = ExtResource("2_0ml36")
+
+[node name="MapLoader" type="Node" parent="."]
+script = ExtResource("3_jyv6g")
+
+[node name="MatchManager" type="Node" parent="."]
+script = ExtResource("4_2kxfw")

@@ -1,4 +1,4 @@
-using MultiplayerAutoLoad = ProjectBriseis.Scripts.AutoLoad.MultiplayerAutoLoad;
+using MultiplayerAutoLoad = ProjectBriseis.Scripts.AutoLoad.Multiplayer.MultiplayerAutoLoad;
 using Godot;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands {

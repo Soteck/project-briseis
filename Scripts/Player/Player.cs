@@ -1,5 +1,6 @@
 using Godot;
 using ProjectBriseis.Scripts.AutoLoad;
+using MultiplayerAutoLoad = ProjectBriseis.Scripts.AutoLoad.Multiplayer.MultiplayerAutoLoad;
 
 namespace ProjectBriseis.Scripts.Player {
     public partial class Player : CharacterBody3D {

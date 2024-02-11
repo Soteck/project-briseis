@@ -1,4 +1,5 @@
 using ProjectBriseis.Scripts.AutoLoad;
+using MultiplayerAutoLoad = ProjectBriseis.Scripts.AutoLoad.Multiplayer.MultiplayerAutoLoad;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands {
     public partial class ListPlayers : BaseCommand {
