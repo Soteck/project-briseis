@@ -9,6 +9,12 @@ namespace ProjectBriseis.Scripts.Scenes;
 public partial class StartupScene : Node3D {
 
     private StartPoint _startingState = StartPoint.Menu;
+
+    [Export]
+    private Node3D _interfaceRoot;
+    
+    [Export]
+    private Node3D _mapRoot;
     
     private const string StartupStateKey = "StartupState";
     public override void _Ready() {
@@ -42,7 +48,7 @@ public partial class StartupScene : Node3D {
             }
         }
 
-        GlobalStateMachine.instance.Start(this, _startingState);
+        GlobalStateMachine.instance.Start(_interfaceRoot, _mapRoot, _startingState);
     }
 
     private static void RunArgs(string arg, string[] argParams) {

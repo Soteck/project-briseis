@@ -9,8 +9,10 @@ public enum GlobalStates {
     Intro = 1,
     MainMenu = 2,
     Connecting = 3,
-    Loading = 4,
-    Credits = 5
+    Connected = 4,
+    Loading = 5,
+    Match = 6,
+    Credits = 7
 }
 
 public enum StartPoint {
@@ -19,72 +21,91 @@ public enum StartPoint {
 }
 
 public partial class GlobalStateMachine : Singleton<GlobalStateMachine> {
-    private Node3D _loadedScene = null;
     private bool _started = false;
-    private Node3D _startupScene;
+
+    private Node3D _introScene = null;
+    private Node3D _mainMenuScene = null;
+    private Node3D _interfaceRoot;
+    private Node3D _mapRoot;
 
     private GlobalStates _state = GlobalStates.Launching;
 
     [Signal]
     public delegate void OnStatechangeEventHandler(GlobalStates newState, GlobalStates oldState);
 
-    public void Start(Node3D startupScene, StartPoint startingState) {
+    public void Start(Node3D interfaceRoot, Node3D mapRoot, StartPoint startingState) {
         if (_started) {
             Log.Warning("Trying to start with state " + startingState + " but states already started");
             return;
         }
 
-        _startupScene = startupScene;
-        CallDeferred("StartDeferred", (int) startingState);
+        _interfaceRoot = interfaceRoot;
+        _mapRoot = mapRoot;
+
+        if (startingState == StartPoint.Intro) {
+            CallDeferred("LoadIntro");
+            TransitionState(GlobalStates.Intro);
+        } else {
+            TransitionState(GlobalStates.MainMenu);
+        }
+
+        CallDeferred("LoadMainMenu");
     }
 
     private void StartDeferred(string startingStateS) {
         Enum.TryParse(startingStateS, out StartPoint startingState);
-        switch (startingState) {
-            case StartPoint.Menu:
-                LoadScene("MainMenu.tscn");
-                break;
-            case StartPoint.Intro:
-            default:
-                LoadScene("Intro.tscn");
-                break;
-        }
     }
 
-    public void ServerLoadMap(string mapName) {
-        Log.Info("Server Loading map: " + mapName);
-        Rpc("ClientLoadMapRpc", mapName);
+    public void Connecting() {
+        TransitionState(GlobalStates.Connecting);
     }
 
-
-    [Rpc(
-            MultiplayerApi.RpcMode.AnyPeer,
-            TransferMode = MultiplayerPeer.TransferModeEnum.Reliable,
-            TransferChannel = 0)
-    ]
-    private void ClientLoadMapRpc(string mapName) {
-        Log.Info("Client loading map: " + mapName);
-        //get_tree().change_scene_to_file(game_scene_path)
+    public void Connected() {
+        TransitionState(GlobalStates.Connected);
     }
+
 
     private void TransitionState(GlobalStates newState) {
         GlobalStates oldState = _state;
         _state = newState;
+        IntroVisibility(newState == GlobalStates.MainMenu);
+        MainMenuVisibility(newState == GlobalStates.MainMenu);
+
         EmitSignal(SignalName.OnStatechange, (int) newState, (int) oldState);
     }
 
-    private void LoadScene(string scenePath) {
-        if (_loadedScene != null) {
-            _loadedScene.GetParent().RemoveChild(_loadedScene);
-            return;
-        }
 
+    private void LoadIntro() {
+        _introScene = LoadScene("Intro.tscn");
+        TransitionState(GlobalStates.Intro);
+    }
+
+    private void IntroVisibility(bool visibility) {
+        if (_introScene != null) {
+            _introScene.Visible = visibility;
+        }
+    }
+
+    private void MainMenuVisibility(bool visibility) {
+        if (_mainMenuScene != null) {
+            _mainMenuScene.Visible = visibility;
+        }
+    }
+
+    private void LoadMainMenu() {
+        _mainMenuScene = LoadScene("MainMenu.tscn");
+        TransitionState(GlobalStates.MainMenu);
+    }
+
+    private Node3D LoadScene(string scenePath) {
         string path = "res://Scenes/" + scenePath;
-
         if (ResourceLoader.Load(path) is PackedScene scene) {
-            Node sceneInstance = scene.Instantiate();
-            _startupScene.AddChild(sceneInstance);
+            Node3D sceneInstance = (Node3D) scene.Instantiate();
+            _interfaceRoot.AddChild(sceneInstance);
+            return sceneInstance;
         }
+
+        return null;
     }
 
     public GlobalStates CurrentState() {

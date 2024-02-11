@@ -2,5 +2,11 @@
 
 [ext_resource type="Script" path="res://Scripts/Scenes/StartupScene.cs" id="1_ly24i"]
 
-[node name="StartupScene" type="Node3D"]
+[node name="StartupScene" type="Node3D" node_paths=PackedStringArray("_interfaceRoot", "_mapRoot")]
 script = ExtResource("1_ly24i")
+_interfaceRoot = NodePath("InterfaceRoot")
+_mapRoot = NodePath("MapRoot")
+
+[node name="InterfaceRoot" type="Node3D" parent="."]
+
+[node name="MapRoot" type="Node3D" parent="."]

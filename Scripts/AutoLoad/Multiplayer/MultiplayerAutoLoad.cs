@@ -37,6 +37,9 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
         [Export]
         private MapLoader _mapLoader;
 
+        [Export]
+        private ServerManager _serverManager;
+
         public bool clientConnectionStatus { private set; get; } = false;
 
         public override void _SingletonReady() {
@@ -48,6 +51,7 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
             OnPlayersChange += ServerRegisterNotifyChange;
             OnPlayerDisconnect += id => ServerRegisterNotifyChange(id, null);
             ConfigurationAutoLoad.instance.OnConfigurationChange += OnMyConfigurationChanged;
+            GlobalStateMachine.instance.OnStatechange += OnClientStateChanged;
         }
 
         private void OnMyConfigurationChanged(string[] key, Variant value) {
@@ -64,6 +68,10 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
                     }
                 }
             }
+        }
+
+        private void OnClientStateChanged(GlobalStates newstate, GlobalStates oldstate) {
+            ClientSendInformation();
         }
 
         private void ServerRegisterNotifyChange(long id, string playerInfo) {
@@ -117,9 +125,12 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
 
             ENetMultiplayerPeer peer = new ENetMultiplayerPeer();
             Error error = peer.CreateClient(address, PORT);
+            GlobalStateMachine.instance.Connecting();
             if (error != Error.Ok) {
                 Log.Error("Error connecting to the server " + address + ":" + PORT + ". " + error);
+                return;
             }
+            GlobalStateMachine.instance.Connected();
 
             Multiplayer.MultiplayerPeer = peer;
             _myMultiplayerId = Multiplayer.GetUniqueId();
@@ -130,6 +141,7 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
             var error = peer.CreateServer(PORT, MAX_CONNECTIONS);
             if (error != Error.Ok) {
                 Log.Error("Error creating the server " + MAX_CONNECTIONS + " players at port: " + PORT + ". " + error);
+                return;
             }
 
             Multiplayer.MultiplayerPeer = peer;
@@ -143,6 +155,8 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
             };
 
             EmitSignal(MultiplayerAutoLoad.SignalName.OnPlayersChange, id, EncodePlayerConnection(connection));
+
+            _serverManager.Start();
         }
 
         public void Disconnect() {
@@ -155,7 +169,7 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
                 return;
             }
 
-            GlobalStateMachine.instance.ServerLoadMap(mapName);
+            _mapLoader.ServerLoadMap(mapName);
         }
 
         public List<PlayerConnection> GetPlayers() {
