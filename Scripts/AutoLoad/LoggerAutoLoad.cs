@@ -71,6 +71,10 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             AddText($"[color=\"green\"]{DateTime.Now:HH:mm:ss.fff} {message}[/color]");
         }
 
+        public void LogRpc(string message) {
+            AddText($"[color=\"#c4766a\"]{DateTime.Now:HH:mm:ss.fff} ~ {message}[/color]");
+        }
+
         public void UserInput(string message) {
             AddText($"[color=\"white\"]{DateTime.Now:HH:mm:ss.fff} {message}[/color]");
         }
@@ -96,6 +100,12 @@ namespace ProjectBriseis.Scripts.AutoLoad {
     public abstract class Log {
         public static void Info(string message) {
             LoggerAutoLoad.instance.LogInfo(message);
+        }
+        public static void Rpc(string message) {
+            LoggerAutoLoad.instance.LogRpc(message);
+        }
+        public static void RpcId(long id, string message) {
+            LoggerAutoLoad.instance.LogRpc("{" + id +"} " + message);
         }
 
         public static void UserInput(string message) {
