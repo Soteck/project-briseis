@@ -71,11 +71,15 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
         }
 
         private void OnClientStateChanged(GlobalStates newstate, GlobalStates oldstate) {
-            ClientSendInformation();
+            if (GlobalStateMachine.instance.NetworkRunning()) {
+                
+                ClientSendInformation();
+            }
         }
 
         private void ServerRegisterNotifyChange(long id, string playerInfo) {
             _players[id] = DecodePlayerConnection(playerInfo);
+            Log.RpcId(id, "ClientOnPlayersChange" + playerInfo);
             Rpc("ClientOnPlayersChange", id, playerInfo);
         }
 
@@ -110,9 +114,12 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
             };
 
             EmitSignal(MultiplayerAutoLoad.SignalName.OnPlayersChange, id, EncodePlayerConnection(connection));
+            Log.RpcId(id, "Call to client ClientSendInformation");
             RpcId(id, "ClientSendInformation");
+            _mapLoader.ServerNewPlayerLoadMap(id);
 
             foreach (KeyValuePair<long, PlayerConnection> playerConnection in _players) {
+                Log.RpcId(id, "Call to client ClientOnPlayersChange" + playerConnection.Key + EncodePlayerConnection(playerConnection.Value));
                 RpcId(id, "ClientOnPlayersChange",
                       playerConnection.Key, EncodePlayerConnection(playerConnection.Value));
             }
@@ -156,7 +163,7 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
 
             EmitSignal(MultiplayerAutoLoad.SignalName.OnPlayersChange, id, EncodePlayerConnection(connection));
 
-            _serverManager.Start();
+            _serverManager.StartServer();
         }
 
         public void Disconnect() {
@@ -211,6 +218,7 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
                 Status = GlobalStateMachine.instance.CurrentState()
             };
             _players[connection.Id] = connection;
+            Log.Rpc("ServerReceivePlayerInformation" +  EncodePlayerConnection(connection));
             Rpc("ServerReceivePlayerInformation", EncodePlayerConnection(connection));
         }
 

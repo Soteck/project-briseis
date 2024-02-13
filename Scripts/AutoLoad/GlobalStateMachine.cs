@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Godot;
 using ProjectBriseis.objects.Logic;
 
@@ -33,6 +34,10 @@ public partial class GlobalStateMachine : Singleton<GlobalStateMachine> {
     [Signal]
     public delegate void OnStatechangeEventHandler(GlobalStates newState, GlobalStates oldState);
 
+
+    private readonly GlobalStates[] _networkOnStates =
+        {GlobalStates.Connecting, GlobalStates.Connected, GlobalStates.Loading, GlobalStates.Match};
+
     public void Start(Node3D interfaceRoot, Node3D mapRoot, StartPoint startingState) {
         if (_started) {
             Log.Warning("Trying to start with state " + startingState + " but states already started");
@@ -64,6 +69,14 @@ public partial class GlobalStateMachine : Singleton<GlobalStateMachine> {
         TransitionState(GlobalStates.Connected);
     }
 
+    public void Loading() {
+        TransitionState(GlobalStates.Loading);
+    }
+
+    public void Match() {
+        TransitionState(GlobalStates.Match);
+    }
+
 
     private void TransitionState(GlobalStates newState) {
         GlobalStates oldState = _state;
@@ -76,7 +89,7 @@ public partial class GlobalStateMachine : Singleton<GlobalStateMachine> {
 
 
     private void LoadIntro() {
-        _introScene = LoadScene("Intro.tscn");
+        _introScene = LoadInterfaceScene("Intro.tscn");
         TransitionState(GlobalStates.Intro);
     }
 
@@ -89,15 +102,17 @@ public partial class GlobalStateMachine : Singleton<GlobalStateMachine> {
     private void MainMenuVisibility(bool visibility) {
         if (_mainMenuScene != null) {
             _mainMenuScene.Visible = visibility;
+            //TODO: Find a more elegant way to do this
+            ((CanvasLayer) _mainMenuScene.GetChild(0)).Visible = visibility;
         }
     }
 
     private void LoadMainMenu() {
-        _mainMenuScene = LoadScene("MainMenu.tscn");
+        _mainMenuScene = LoadInterfaceScene("MainMenu.tscn");
         TransitionState(GlobalStates.MainMenu);
     }
 
-    private Node3D LoadScene(string scenePath) {
+    private Node3D LoadInterfaceScene(string scenePath) {
         string path = "res://Scenes/" + scenePath;
         if (ResourceLoader.Load(path) is PackedScene scene) {
             Node3D sceneInstance = (Node3D) scene.Instantiate();
@@ -108,7 +123,22 @@ public partial class GlobalStateMachine : Singleton<GlobalStateMachine> {
         return null;
     }
 
+    public void ClearCurrentMap() {
+        foreach (var child in _mapRoot.GetChildren()) {
+            _mapRoot.RemoveChild(child);
+            child.QueueFree();
+        }
+    }
+
+    public void AttachNewMap(Node3D mapInstance) {
+        _mapRoot.AddChild(mapInstance);
+    }
+
     public GlobalStates CurrentState() {
         return _state;
+    }
+
+    public bool NetworkRunning() {
+        return _networkOnStates.Contains(_state);
     }
 }
