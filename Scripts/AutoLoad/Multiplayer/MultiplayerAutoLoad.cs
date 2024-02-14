@@ -43,7 +43,7 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
         public bool clientConnectionStatus { private set; get; } = false;
 
         public override void _SingletonReady() {
-            Multiplayer.PeerConnected += ServerPeerConnected;
+            Multiplayer.PeerConnected += PeerConnected;
             Multiplayer.PeerDisconnected += ServerPeerDisconnected;
             Multiplayer.ConnectedToServer += ClientConnectedToServer;
             Multiplayer.ConnectionFailed += ClientConnectionFailed;
@@ -52,6 +52,12 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
             OnPlayerDisconnect += id => ServerRegisterNotifyChange(id, null);
             ConfigurationAutoLoad.instance.OnConfigurationChange += OnMyConfigurationChanged;
             GlobalStateMachine.instance.OnStatechange += OnClientStateChanged;
+        }
+
+        private void PeerConnected(long id) {
+            if (Multiplayer.IsServer() && id != 1) {
+                ServerPeerConnected(id);
+            }
         }
 
         private void OnMyConfigurationChanged(string[] key, Variant value) {
