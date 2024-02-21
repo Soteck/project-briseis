@@ -1,20 +1,27 @@
 ﻿using Godot;
+using ProjectBriseis.Scripts.Maps.Base;
 
 namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer;
 
 public partial class MapLoader : Node {
-    private string _actualMap = null;
+    private string _actualMapName = null;
+    private BaseMap _actualMap = null;
+    
+    
+    [Signal]
+    public delegate void OnServerMapLoadedEventHandler(BaseMap mapInstance);
 
     public void ServerLoadMap(string mapName) {
         Log.Rpc("Call to ClientLoadMapRpc: " + mapName);
         Rpc("ClientLoadMapRpc", mapName);
-        LoadMap(mapName);
-        _actualMap = mapName;
+        _actualMap = (BaseMap) LoadMap(mapName);
+        EmitSignal(SignalName.OnServerMapLoaded, _actualMap);
+        _actualMapName = mapName;
     }
 
     public void ServerNewPlayerLoadMap(long id) {
-        Log.RpcId(id, "Call to client ClientLoadMapRpc: " + _actualMap);
-        RpcId(id, "ClientLoadMapRpc", _actualMap);
+        Log.RpcId(id, "Call to client ClientLoadMapRpc: " + _actualMapName);
+        RpcId(id, "ClientLoadMapRpc", _actualMapName);
     }
 
 
@@ -28,20 +35,28 @@ public partial class MapLoader : Node {
         LoadMap(mapName);
     }
 
-    private void LoadMap(string mapName) {
+    private Node3D LoadMap(string mapName) {
         GlobalStateMachine.instance.Loading();
-        AddMapToScene(mapName);
+        Node3D ret = AddMapToScene(mapName);
         GlobalStateMachine.instance.Match();
+        return ret;
     }
 
-    private void AddMapToScene(string mapName) {
+    private Node3D AddMapToScene(string mapName) {
         GlobalStateMachine.instance.ClearCurrentMap();
+        Node3D mapInstance = null;
         string path = "res://" + mapName;
         if (ResourceLoader.Load(path) is PackedScene scene) {
-            Node3D sceneInstance = (Node3D) scene.Instantiate();
-            GlobalStateMachine.instance.AttachNewMap(sceneInstance);
+            mapInstance = (Node3D) scene.Instantiate();
+            GlobalStateMachine.instance.AttachNewMap(mapInstance);
         } else {
             Log.Error("Map not found " + mapName);
         }
+
+        return mapInstance;
+    }
+
+    public BaseMap LoadedMap() {
+        return _actualMap;
     }
 }
