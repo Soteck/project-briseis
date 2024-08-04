@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Godot;
 using ProjectBriseis.Scripts.AutoLoad;
 
 namespace ProjectBriseis.Scripts.Util;
@@ -31,4 +32,5 @@ public abstract class RandomUtil {
 
         return randomNumbers;
     }
+
 }

@@ -1,0 +1,38 @@
+[gd_scene load_steps=7 format=3 uid="uid://16oen7aqw67i"]
+
+[ext_resource type="Script" path="res://Scripts/Player/Character.cs" id="1_c8kht"]
+[ext_resource type="Script" path="res://Scripts/Player/Controller/OfflinePlayerController.cs" id="2_keiby"]
+[ext_resource type="Script" path="res://Scripts/Player/Controller/OnlineCharacterController.cs" id="3_g3c12"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_p8s17"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_t0d2d"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7pakp"]
+albedo_color = Color(0.560784, 0.305882, 0.172549, 1)
+
+[node name="Character" type="CharacterBody3D" node_paths=PackedStringArray("_onlinePlayerController", "_offlinePlayerController")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = ExtResource("1_c8kht")
+_onlinePlayerController = NodePath("Controller/OnlineController")
+_offlinePlayerController = NodePath("Controller/OfflineController")
+
+[node name="Controller" type="Node" parent="."]
+
+[node name="OfflineController" type="Node" parent="Controller" node_paths=PackedStringArray("_characterBody3D")]
+script = ExtResource("2_keiby")
+_characterBody3D = NodePath("../..")
+
+[node name="OnlineController" type="Node" parent="Controller"]
+script = ExtResource("3_g3c12")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_p8s17")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_t0d2d")
+surface_material_override/0 = SubResource("StandardMaterial3D_7pakp")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.846816, 0)
+current = true

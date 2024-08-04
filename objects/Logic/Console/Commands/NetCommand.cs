@@ -1,5 +1,6 @@
 using MultiplayerAutoLoad = ProjectBriseis.Scripts.AutoLoad.Multiplayer.MultiplayerAutoLoad;
 using Godot;
+using ProjectBriseis.Scripts.Manager;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands {
     public partial class NetCommand : BaseCommand {
@@ -15,21 +16,20 @@ namespace ProjectBriseis.objects.Logic.Console.Commands {
             }
             switch (subcommand) {
                 case "host":
-                    MultiplayerAutoLoad.instance.Host();
+                    NetworkManager.instance.Host();
                     break;
                 case "connect":
-                    MultiplayerAutoLoad.instance.Connect(firstArg);
+                    NetworkManager.instance.Connect(firstArg);
                     break;
                 case "disconnect":
-                    MultiplayerAutoLoad.instance.Disconnect();
+                    NetworkManager.instance.Disconnect();
                     break;
                 case "map":
-                    MultiplayerAutoLoad.instance.LoadMap(firstArg);
+                    NetworkManager.instance.LoadMap(firstArg);
                     break;
                     default:
                     break;
             }
-            
         }
 
         public override string[][] GetSubCommands() {

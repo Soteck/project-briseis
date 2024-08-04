@@ -1,7 +1,7 @@
 ﻿using Godot;
 using ProjectBriseis.Scripts.Maps.Base;
 
-namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer;
+namespace ProjectBriseis.Scripts.Manager;
 
 public enum MatchState {
     WarmUp = 1,
@@ -20,12 +20,12 @@ public partial class MatchManager : Node {
 
     [ExportGroup("Dependencies")]
     [Export]
-    private MapLoader _mapLoader;
+    private MapManager _mapManager;
 
     private BaseMap _mapLoaded;
 
     public override void _Ready() {
-        _mapLoader.OnServerMapLoaded += instance => _mapLoaded = instance;
+        _mapManager.OnServerMapLoaded += instance => _mapLoaded = instance;
     }
 
     public MatchState CurrentState() {

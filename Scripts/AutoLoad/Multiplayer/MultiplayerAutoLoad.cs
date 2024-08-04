@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Godot;
 using ProjectBriseis.objects.Logic;
+using ProjectBriseis.Scripts.Manager.Server;
 
 namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
     public struct PlayerConnection {
@@ -11,6 +12,8 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
     }
 
     public partial class MultiplayerAutoLoad : Singleton<MultiplayerAutoLoad> {
+        
+        //private Player = ResourceLoader.Load(path) is PackedScene scene
         private const string DEFAULT_SERVER_IP = "127.0.0.1";
         private const int PORT = 27960;
         private const int MAX_CONNECTIONS = 24;
@@ -29,17 +32,22 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
 
         [ExportGroup("Dependencies")]
         [Export]
-        private MatchManager _matchManager;
+        private Manager.MatchManager _matchManager;
 
         [Export]
-        private PlayerSpawner _playerSpawner;
-
-        [Export]
-        private MapLoader _mapLoader;
+        private Manager.Server.ServerSpawnManager _serverSpawnManager;
+        //
+        // [Export]
+        // private MapLoader _mapLoader;
 
         [Export]
         private ServerManager _serverManager;
 
+        [Export]
+        private Node3D _playersRoot;
+        
+        //---
+        private PackedScene _playerScene;
         public bool clientConnectionStatus { private set; get; } = false;
 
         public override void _SingletonReady() {
@@ -52,6 +60,8 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
             OnPlayerDisconnect += id => ServerRegisterNotifyChange(id, null);
             ConfigurationAutoLoad.instance.OnConfigurationChange += OnMyConfigurationChanged;
             GlobalStateMachine.instance.OnStatechange += OnClientStateChanged;
+            _playerScene = ResourceLoader.Load("res://Prefabs/Player/Player.tscn") as PackedScene;
+
         }
 
         private void PeerConnected(long id) {
@@ -114,21 +124,23 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
         private void ServerPeerConnected(long id) {
             Log.Info("Server: Peer with id " + id + " connected");
 
-            PlayerConnection connection = new() {
-                Id = id,
-                Status = GlobalStates.Connecting
-            };
-
-            EmitSignal(MultiplayerAutoLoad.SignalName.OnPlayersChange, id, EncodePlayerConnection(connection));
-            Log.RpcId(id, "Call to client ClientSendInformation");
-            RpcId(id, "ClientSendInformation");
-            _mapLoader.ServerNewPlayerLoadMap(id);
-
-            foreach (KeyValuePair<long, PlayerConnection> playerConnection in _players) {
-                Log.RpcId(id, "Call to client ClientOnPlayersChange" + playerConnection.Key + EncodePlayerConnection(playerConnection.Value));
-                RpcId(id, "ClientOnPlayersChange",
-                      playerConnection.Key, EncodePlayerConnection(playerConnection.Value));
-            }
+            AddPlayer(id);
+            
+            // PlayerConnection connection = new() {
+            //     Id = id,
+            //     Status = GlobalStates.Connecting
+            // };
+            //
+            // EmitSignal(MultiplayerAutoLoad.SignalName.OnPlayersChange, id, EncodePlayerConnection(connection));
+            // Log.RpcId(id, "Call to client ClientSendInformation");
+            // RpcId(id, "ClientSendInformation");
+            // _mapLoader.ServerNewPlayerLoadMap(id);
+            //
+            // foreach (KeyValuePair<long, PlayerConnection> playerConnection in _players) {
+            //     Log.RpcId(id, "Call to client ClientOnPlayersChange" + playerConnection.Key + EncodePlayerConnection(playerConnection.Value));
+            //     RpcId(id, "ClientOnPlayersChange",
+            //           playerConnection.Key, EncodePlayerConnection(playerConnection.Value));
+            // }
         }
 
         public void Connect(string address) {
@@ -159,17 +171,26 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
 
             Multiplayer.MultiplayerPeer = peer;
 
-            const long id = 1;
-            _myMultiplayerId = id;
-            PlayerConnection connection = new() {
-                Id = id,
-                Nickname = ConfigurationAutoLoad.playerName,
-                Status = GlobalStateMachine.instance.CurrentState()
-            };
+            AddPlayer(Multiplayer.GetUniqueId());
 
-            EmitSignal(MultiplayerAutoLoad.SignalName.OnPlayersChange, id, EncodePlayerConnection(connection));
+            // const long id = 1;
+            // _myMultiplayerId = id;
+            // PlayerConnection connection = new() {
+            //     Id = id,
+            //     Nickname = ConfigurationAutoLoad.playerName,
+            //     Status = GlobalStateMachine.instance.CurrentState()
+            // };
+            //
+            // EmitSignal(MultiplayerAutoLoad.SignalName.OnPlayersChange, id, EncodePlayerConnection(connection));
+            //
+            // _serverManager.StartServer();
+        }
 
-            _serverManager.StartServer();
+        private void AddPlayer(long id) {
+            Node player = _playerScene.Instantiate();
+            player.Name =  id.ToString();
+            _playersRoot.AddChild(player);
+            
         }
 
         public void Disconnect() {
@@ -182,7 +203,7 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
                 return;
             }
 
-            _mapLoader.ServerLoadMap(mapName);
+            // _mapLoader.ServerLoadMap(mapName);
         }
 
         public List<PlayerConnection> GetPlayers() {

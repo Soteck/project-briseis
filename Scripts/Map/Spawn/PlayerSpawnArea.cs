@@ -4,6 +4,7 @@ using Godot;
 using Godot.Collections;
 using ProjectBriseis.Scripts.AutoLoad;
 using ProjectBriseis.Scripts.AutoLoad.Multiplayer;
+using ProjectBriseis.Scripts.Manager;
 using ProjectBriseis.Scripts.Util;
 
 namespace ProjectBriseis.Scripts.Map.Spawn;

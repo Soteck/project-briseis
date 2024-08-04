@@ -1,22 +1,31 @@
 ﻿using Godot;
+using ProjectBriseis.Scripts.AutoLoad;
 using ProjectBriseis.Scripts.Maps.Base;
 
-namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer;
+namespace ProjectBriseis.Scripts.Manager;
 
-public partial class MapLoader : Node {
+public partial class MapManager : Node {
     private string _actualMapName = null;
     private BaseMap _actualMap = null;
     
+
+    [Export]
+    private Node3D _mapsRoot;
+
     
     [Signal]
     public delegate void OnServerMapLoadedEventHandler(BaseMap mapInstance);
 
     public void ServerLoadMap(string mapName) {
-        Log.Rpc("Call to ClientLoadMapRpc: " + mapName);
-        Rpc("ClientLoadMapRpc", mapName);
-        _actualMap = (BaseMap) LoadMap(mapName);
-        EmitSignal(SignalName.OnServerMapLoaded, _actualMap);
-        _actualMapName = mapName;
+        // Log.Rpc("Call to ClientLoadMapRpc: " + mapName);
+        // Rpc("ClientLoadMapRpc", mapName);
+        // _actualMap = (BaseMap) LoadMap(mapName);
+        // EmitSignal(MapManager.SignalName.OnServerMapLoaded, _actualMap);
+        // _actualMapName = mapName;
+        PackedScene scene = ResourceLoader.Load("res://" + mapName) as PackedScene;
+        _actualMap = scene.Instantiate() as BaseMap;
+        _mapsRoot.AddChild(_actualMap);
+
     }
 
     public void ServerNewPlayerLoadMap(long id) {

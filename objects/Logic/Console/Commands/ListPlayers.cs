@@ -1,5 +1,5 @@
 using ProjectBriseis.Scripts.AutoLoad;
-using MultiplayerAutoLoad = ProjectBriseis.Scripts.AutoLoad.Multiplayer.MultiplayerAutoLoad;
+using ProjectBriseis.Scripts.Manager;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands {
     public partial class ListPlayers : BaseCommand {
@@ -7,7 +7,7 @@ namespace ProjectBriseis.objects.Logic.Console.Commands {
         }
 
         public override void _Run(string[] args) {
-            foreach (var player in MultiplayerAutoLoad.instance.GetPlayers()) {
+            foreach (var player in NetworkManager.instance.GetPlayers()) {
                 Log.Info(player.Id + "\t" + player.Nickname);
             }
         }

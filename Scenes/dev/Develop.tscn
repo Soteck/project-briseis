@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/Maps/Develop/DevelopMap.cs" id="1_lf2sq"]
 [ext_resource type="Material" uid="uid://w7vfhy8sq1iq" path="res://Art/Materials/RedStandard.tres" id="2_hxhfv"]
-[ext_resource type="PackedScene" uid="uid://16oen7aqw67i" path="res://Prefabs/Player/Player.tscn" id="2_j1v8t"]
+[ext_resource type="PackedScene" uid="uid://16oen7aqw67i" path="res://Prefabs/Player/Character.tscn" id="2_j1v8t"]
 [ext_resource type="Material" uid="uid://drnvhqeetl0gf" path="res://Art/Materials/BlueStandard.tres" id="3_pqp6u"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_lwvaw"]
@@ -13,8 +13,9 @@ size = Vector3(25, 0.25, 25)
 [sub_resource type="BoxShape3D" id="BoxShape3D_tceju"]
 size = Vector3(0.25, 12.5, 25)
 
-[node name="MainScene" type="Node3D"]
+[node name="MainScene" type="Node3D" node_paths=PackedStringArray("_spawnAreas")]
 script = ExtResource("1_lf2sq")
+_spawnAreas = []
 
 [node name="Node" type="Node" parent="."]
 
