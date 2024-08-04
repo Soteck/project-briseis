@@ -36,11 +36,12 @@ script = ExtResource("2_xfhkh")
 _serverManager = NodePath("../ServerManager")
 _playersRoot = NodePath("../../PlayersRoot")
 
-[node name="ServerManager" type="Node3D" parent="Managers" node_paths=PackedStringArray("_mapManager", "_serverSpawnManager")]
+[node name="ServerManager" type="Node3D" parent="Managers" node_paths=PackedStringArray("_mapManager", "_serverSpawnManager", "_serverPlayersManager")]
 visible = false
 script = ExtResource("4_ttmsf")
 _mapManager = NodePath("../MapManager")
 _serverSpawnManager = NodePath("ServerSpawnManager")
+_serverPlayersManager = NodePath("ServerPlayersManager")
 
 [node name="ServerPlayersManager" type="Node3D" parent="Managers/ServerManager" node_paths=PackedStringArray("_networkManager")]
 script = ExtResource("5_podkg")

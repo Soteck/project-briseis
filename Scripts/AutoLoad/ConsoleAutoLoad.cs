@@ -25,6 +25,9 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             Undeploy();
         }
 
+        private float _doubleTapTime = 300f;
+        private float _lastAutocompleteTime = 0;
+
 
         public override void _Process(double delta) {
             if (Input.IsActionJustPressed("console")) {
@@ -37,12 +40,18 @@ namespace ProjectBriseis.Scripts.AutoLoad {
             }
 
             if (_consoleDeployed && Input.IsActionJustReleased("autocomplete")) {
+                float now = Time.GetTicksMsec();
+                if (_lastAutocompleteTime + _doubleTapTime > now) {
+                    consoleInterpreter.Help(lineEdit.Text);
+                } 
+                _lastAutocompleteTime = now;
                 string res = consoleInterpreter.AutoComplete(lineEdit.Text);
                 if (res != null) {
                     lineEdit.Text = res;
                     lineEdit.CaretColumn = lineEdit.Text.Length;
                 }
             }
+            
         }
 
         private void Undeploy() {

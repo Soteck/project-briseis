@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using ProjectBriseis.objects.Logic.Console.Commands;
 using ProjectBriseis.Scripts.AutoLoad;
@@ -10,7 +11,8 @@ namespace ProjectBriseis.objects.Logic.Console {
             typeof(ConfigCommand),
             typeof(NetCommand),
             typeof(ListPlayers),
-            typeof(QuitCommand)
+            typeof(QuitCommand),
+            typeof(TeamCommand)
         };
 
 
@@ -80,6 +82,25 @@ namespace ProjectBriseis.objects.Logic.Console {
 
             return found.commandKey  + " ";
         }
-        
+
+        public void Help(string input) {
+            string trimInput = input.Trim();
+            if (trimInput.Length < 1) {
+                string r = null;
+                List<string> keyList = _commandsDictionary.Keys.ToList();
+                keyList.Sort();
+                foreach (string commandKey in keyList) {
+                    if (r == null) {
+                        r = "";
+                    } else {
+                        r += ", ";
+                    }
+
+                    r += commandKey;
+                }
+
+                Log.Info("Available commands: " + r);
+            }
+        }
     }
 }
