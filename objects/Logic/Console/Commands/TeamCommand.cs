@@ -1,4 +1,5 @@
-﻿using ProjectBriseis.Scripts.Manager.Server;
+﻿using ProjectBriseis.Scripts.Manager;
+using ProjectBriseis.Scripts.Manager.Server;
 
 namespace ProjectBriseis.objects.Logic.Console.Commands;
 
@@ -12,10 +13,13 @@ public partial class TeamCommand : BaseCommand {
 
         switch (subcommand) {
             case "a":
-                ServerPlayersManager.instance.joinTeamA();
+                NetworkManager.instance.RequestJoinTeamA();
                 break;
             case "b":
-                ServerPlayersManager.instance.joinTeamB();
+                NetworkManager.instance.RequestJoinTeamB();
+                break;
+            case "s":
+                NetworkManager.instance.RequestJoinTeamSpectator();
                 break;
             default:
                 break;

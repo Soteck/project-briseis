@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://s0n8imk1ip1m"]
+
+[ext_resource type="Script" path="res://Scripts/Interface/Hud.cs" id="1_wynjf"]
+
+[node name="Hud" type="Control" node_paths=PackedStringArray("MapTimeLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wynjf")
+MapTimeLabel = NodePath("AspectRatioContainer/MapTime")
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MapTime" type="Label" parent="AspectRatioContainer"]
+layout_mode = 2

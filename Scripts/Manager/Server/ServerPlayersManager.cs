@@ -35,12 +35,4 @@ public partial class ServerPlayersManager : Node {
             };
         };
     }
-
-    public void joinTeamB() {
-        // throw new System.NotImplementedException();
-    }
-
-    public void joinTeamA() {
-        // throw new System.NotImplementedException();
-    }
 }

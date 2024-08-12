@@ -17,7 +17,7 @@ public partial class NetworkManager : Node3D {
     private long _myMultiplayerId;
 
     public static NetworkManager instance { get; private set; }
-    
+
     [Signal]
     public delegate void OnPlayersChangeEventHandler(long id, string playerInfoEncoded);
 
@@ -36,7 +36,6 @@ public partial class NetworkManager : Node3D {
     //
     // [Export]
     // private MapLoader _mapLoader;
-    
     [Export]
     private Server.ServerManager _serverManager;
 
@@ -182,7 +181,7 @@ public partial class NetworkManager : Node3D {
         //
         _serverManager.Visible = true;
         _serverManager.StartServer();
-        
+
         GlobalStateMachine.instance.Connected();
         Log.Info("Server started on port: " + PORT);
     }
@@ -276,5 +275,42 @@ public partial class NetworkManager : Node3D {
             Status = (GlobalStates) Convert.ToDouble(parts[2])
         };
         return connection;
+    }
+
+
+    public void RequestJoinTeamA() {
+        _ClientDoRequestJoinTeam(Team.A);
+    }
+
+    public void RequestJoinTeamB() {
+        _ClientDoRequestJoinTeam(Team.B);
+    }
+
+
+    public void RequestJoinTeamSpectator() {
+        _ClientDoRequestJoinTeam(Team.Spectator);
+    }
+
+    private void _ClientDoRequestJoinTeam(Team team) {
+        Log.Rpc("ServerPlayerRequestJoinTeam" + team);
+        if (Multiplayer.IsServer()) {
+            ServerPlayerRequestJoinTeam(team.ToString(), 1);
+        } else {
+            RpcId(1, "ServerPlayerRequestJoinTeam", team.ToString(), Multiplayer.GetUniqueId());
+        }
+    }
+
+
+    [Rpc(
+            MultiplayerApi.RpcMode.AnyPeer,
+            TransferMode = MultiplayerPeer.TransferModeEnum.Reliable,
+            TransferChannel = 0)
+    ]
+    private void ServerPlayerRequestJoinTeam(string teamS, int playerId) {
+        Enum.TryParse(teamS, out Team team);
+        Log.Info("Server received update of a player info change: " + team);
+        PlayerConnection playerConnection = _players[playerId];
+        playerConnection.team = team;
+        _players[playerId] = playerConnection;
     }
 }

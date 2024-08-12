@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Godot;
 using ProjectBriseis.objects.Logic;
+using ProjectBriseis.Scripts.Manager;
 using ProjectBriseis.Scripts.Manager.Server;
 
 namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
@@ -9,6 +10,7 @@ namespace ProjectBriseis.Scripts.AutoLoad.Multiplayer {
         public long Id;
         public GlobalStates Status;
         public string Nickname;
+        public Team team;
     }
 
     public partial class MultiplayerAutoLoad : Singleton<MultiplayerAutoLoad> {

@@ -7,8 +7,9 @@ namespace ProjectBriseis.objects.Logic.Console.Commands {
         }
 
         public override void _Run(string[] args) {
+            Log.Info("Player ID\t\t\tPlayer Name\t\t\tTeam");
             foreach (var player in NetworkManager.instance.GetPlayers()) {
-                Log.Info(player.Id + "\t" + player.Nickname);
+                Log.Info(player.Id + "\t\t\t" + player.Nickname + "\t\t\t" + player.team);
             }
         }
 

@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://d3hj8ssmajieu"]
+[gd_scene load_steps=11 format=3 uid="uid://d3hj8ssmajieu"]
 
 [ext_resource type="Script" path="res://Scripts/Scenes/StartupScene.cs" id="1_ly24i"]
+[ext_resource type="PackedScene" uid="uid://s0n8imk1ip1m" path="res://Prefabs/Interface/HUD.tscn" id="2_1g08t"]
 [ext_resource type="Script" path="res://Scripts/Manager/ManagersManager.cs" id="2_tichs"]
 [ext_resource type="Script" path="res://Scripts/Manager/NetworkManager.cs" id="2_xfhkh"]
 [ext_resource type="Script" path="res://Scripts/Manager/Server/ServerSpawnManager.cs" id="4_333xw"]
@@ -9,12 +10,20 @@
 [ext_resource type="Script" path="res://Scripts/Manager/MatchManager.cs" id="5_qwe6p"]
 [ext_resource type="Script" path="res://Scripts/Manager/MapManager.cs" id="6_wmmy7"]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_kgyqx"]
+properties/0/path = NodePath("MatchManager:MapTime")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+
 [node name="StartupScene" type="Node3D" node_paths=PackedStringArray("_interfaceRoot", "_mapRoot")]
 script = ExtResource("1_ly24i")
 _interfaceRoot = NodePath("InterfaceRoot")
 _mapRoot = NodePath("MapRoot")
 
 [node name="InterfaceRoot" type="Node3D" parent="."]
+
+[node name="Hud" parent="InterfaceRoot" node_paths=PackedStringArray("MatchManager") instance=ExtResource("2_1g08t")]
+MatchManager = NodePath("../../Managers/MatchManager")
 
 [node name="MapRoot" type="Node3D" parent="."]
 
@@ -54,10 +63,14 @@ _networkManager = NodePath("../../NetworkManager")
 _mapManager = NodePath("../../MapManager")
 _serverPlayersManager = NodePath("../ServerPlayersManager")
 
-[node name="MatchManager" type="Node3D" parent="Managers" node_paths=PackedStringArray("_mapManager")]
+[node name="MatchManager" type="Node3D" parent="Managers" node_paths=PackedStringArray("_mapManager", "_serverManager")]
 script = ExtResource("5_qwe6p")
 _mapManager = NodePath("../MapManager")
+_serverManager = NodePath("../ServerManager")
 
 [node name="MapManager" type="Node3D" parent="Managers" node_paths=PackedStringArray("_mapsRoot")]
 script = ExtResource("6_wmmy7")
 _mapsRoot = NodePath("../../MapRoot")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Managers"]
+replication_config = SubResource("SceneReplicationConfig_kgyqx")
